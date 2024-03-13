@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="initial/000-create-changeset-enums.xml" relativeToChangelogFile="true"/>
+    <include file="initial/001-create-changeset-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/002-create-changeset-forests-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/003-create-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/004-create-changeset-incrementations-log-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/100-insert-datas.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

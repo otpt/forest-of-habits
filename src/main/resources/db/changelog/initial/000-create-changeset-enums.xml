@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_enums" author="n.erko">
+        <sql>CREATE TYPE tree_type_enum AS ENUM ('boolean_tree', 'inf_tree', 'limited_tree', 'periodic_tree')</sql>
+        <sql>CREATE TYPE tree_period_enum AS ENUM ('day', 'week', 'month', 'quarter', 'year', 'none')</sql>
+    </changeSet>
+</databaseChangeLog>
