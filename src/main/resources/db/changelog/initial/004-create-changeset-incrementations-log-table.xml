@@ -4,16 +4,16 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-   <changeSet id="create_table_forests" author="n.erko">
-       <createTable tableName="Incrementation_Log">
-           <column name="log_id" type="SERIAL">
+   <changeSet id="create_table_incrementation_log" author="n.erko">
+       <createTable tableName="incrementation_log">
+           <column name="id" type="SERIAL">
                <constraints primaryKey="true" nullable="false"/>
            </column>
            <column name="tree_id" type="INT">
-               <constraints foreignKeyName="fk3" referencedTableName="Trees" referencedColumnNames="tree_id"/>
+               <constraints foreignKeyName="fk_inclog_tree" referencedTableName="trees" referencedColumnNames="id"/>
            </column>
-           <column name="increment_date" type="TIMESTAMP"/>
-           <column name="increment_value" type="VARCHAR(255)"/>
+           <column name="date" type="TIMESTAMP"/>
+           <column name="value" type="VARCHAR(255)"/>
        </createTable>
    </changeSet>
 </databaseChangeLog>

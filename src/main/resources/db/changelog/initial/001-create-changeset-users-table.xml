@@ -5,18 +5,18 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
    <changeSet id="create_table_users" author="n.erko">
-       <createTable tableName="Users">
-           <column name="user_id" type="SERIAL">
+       <createTable tableName="users">
+           <column name="id" type="SERIAL">
                <constraints primaryKey="true" nullable="false"/>
            </column>
            <column name="username" type="VARCHAR(50)">
-               <constraints nullable="false"/>
+               <constraints nullable="false" unique="true"/>
            </column>
            <column name="password" type="VARCHAR(255)">
                <constraints nullable="false"/>
            </column>
            <column name="email" type="VARCHAR(100)">
-               <constraints nullable="false"/>
+               <constraints nullable="false" unique="true"/>
            </column>
        </createTable>
     </changeSet>

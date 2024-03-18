@@ -4,24 +4,24 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-   <changeSet id="create_table_forests" author="n.erko">
-       <createTable tableName="Trees">
-           <column name="tree_id" type="SERIAL">
+   <changeSet id="create_table_trees" author="n.erko">
+       <createTable tableName="trees">
+           <column name="id" type="SERIAL">
                <constraints primaryKey="true" nullable="false"/>
            </column>
            <column name="forest_id" type="INT">
-               <constraints foreignKeyName="fk2" referencedTableName="Forests" referencedColumnNames="forest_id"/>
+               <constraints foreignKeyName="fk_tree_forest" referencedTableName="forests" referencedColumnNames="id"/>
            </column>
-           <column name="tree_name" type="VARCHAR(100)">
+           <column name="name" type="VARCHAR(100)">
                <constraints nullable="false"/>
            </column>
            <column name="description" type="VARCHAR(255)"/>
-           <column name="tree_type" type="tree_type_enum">
+           <column name="type" type="tree_type_enum">
                <constraints nullable="false"/>
            </column>
            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
-           <column name="tree_limit" type="INT"/>
-           <column name="tree_period" type="tree_period_enum"/>
+           <column name="limit" type="INT"/>
+           <column name="period" type="tree_period_enum"/>
        </createTable>
    </changeSet>
 </databaseChangeLog>
