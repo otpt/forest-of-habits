@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+   <changeSet id="create_table_trees" author="n.erko">
+       <createTable tableName="trees">
+           <column name="id" type="SERIAL">
+               <constraints primaryKey="true" nullable="false"/>
+           </column>
+           <column name="forest_id" type="INT">
+               <constraints foreignKeyName="fk_tree_forest" referencedTableName="forests" referencedColumnNames="id"/>
+           </column>
+           <column name="name" type="VARCHAR(100)">
+               <constraints nullable="false"/>
+           </column>
+           <column name="description" type="VARCHAR(255)"/>
+           <column name="type" type="tree_type_enum">
+               <constraints nullable="false"/>
+           </column>
+           <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+           <column name="limit" type="INT"/>
+           <column name="period" type="tree_period_enum"/>
+       </createTable>
+   </changeSet>
+</databaseChangeLog>
