@@ -8,13 +8,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
 @Component
 public class JwtTokenUtils {
 
-    private static final String USER_NAME = "User name";
+    private static final String USER_NAME = "userName";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -24,18 +26,20 @@ public class JwtTokenUtils {
 
     public String generateToken(UserDetails userDetails) {
 
+        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .subject("JWT Auth token")
                 .expiration(new Date(new Date().getTime() + jwtDuration.toMillis()))
-                .signWith(Keys.password(secret.toCharArray()))
+                .signWith(secretKey)
                 .claim(USER_NAME, userDetails.getUsername())
                 .compact();
     }
 
     public String getUsername(String token) {
 
+        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         Jws<Claims> jws = Jwts.parser()
-                .verifyWith(Keys.password(secret.toCharArray()))
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token);
 

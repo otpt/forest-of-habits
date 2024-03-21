@@ -2,7 +2,7 @@ package hh.forest_of_habits.controller;
 
 import hh.forest_of_habits.dto.AuthRequest;
 import hh.forest_of_habits.dto.AuthResponse;
-import hh.forest_of_habits.dto.RegistrationUserRequest;
+import hh.forest_of_habits.dto.RegistrationRequest;
 import hh.forest_of_habits.exception.AppException;
 import hh.forest_of_habits.service.UserService;
 import hh.forest_of_habits.utils.JwtTokenUtils;
@@ -15,19 +15,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
     private final JwtTokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -47,9 +49,9 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(tokenUtils.generateToken(userDetails)));
     }
 
-    @PostMapping("/auth/registration")
-    public ResponseEntity<?> registration(@RequestBody RegistrationUserRequest request) {
-        if (userService.findByName(request.getUsername()) != null) {
+    @PostMapping("/registration")
+    public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
+        if (userService.findByName(request.getUsername()).isPresent()) {
             return new ResponseEntity<>(new AppException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Пользователь уже существует"),
@@ -63,6 +65,8 @@ public class AuthController {
                 request.getPassword(),
                 List.of()
         );
-        return ResponseEntity.ok(new AuthResponse(tokenUtils.generateToken(userDetails)));
+
+        String token = tokenUtils.generateToken(userDetails);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 }
