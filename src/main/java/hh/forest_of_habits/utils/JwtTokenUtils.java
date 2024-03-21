@@ -26,23 +26,25 @@ public class JwtTokenUtils {
 
     public String generateToken(UserDetails userDetails) {
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .subject("JWT Auth token")
-                .expiration(new Date(new Date().getTime() + jwtDuration.toMillis()))
-                .signWith(secretKey)
+                .expiration(new Date(System.currentTimeMillis() + jwtDuration.toMillis()))
+                .signWith(secretKey())
                 .claim(USER_NAME, userDetails.getUsername())
                 .compact();
     }
 
     public String getUsername(String token) {
 
-        SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         Jws<Claims> jws = Jwts.parser()
-                .verifyWith(secretKey)
+                .verifyWith(secretKey())
                 .build()
                 .parseSignedClaims(token);
 
         return jws.getPayload().get(USER_NAME, String.class);
+    }
+
+    private SecretKey secretKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 }
