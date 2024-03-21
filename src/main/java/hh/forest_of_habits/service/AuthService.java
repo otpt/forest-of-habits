@@ -44,7 +44,7 @@ public class AuthService {
                     HttpStatus.UNAUTHORIZED);
         }
         return ResponseEntity.ok(
-                authResponse((UserDetails) authentication));
+                authResponse((UserDetails) authentication.getPrincipal()));
     }
 
     public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
