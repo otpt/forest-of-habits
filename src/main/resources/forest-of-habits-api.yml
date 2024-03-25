@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  title: Forest Of Habits API
+  description: Описание api для сервиса привычек
+  version: 1.0.1
+servers:
+  - url: 'http://localhost:8080'
+    description: Локальный сервер
+paths:
+  /forests:
+    get:
+      operationId: getAllForests
+      summary: Получить леса
+      description: Метод используется для получения всех лесов пользователя
+      tags:
+        - forests
+      responses:
+        200:
+          $ref: '#/components/responses/ForestsListResponse'
+        401:
+          description: Не авторизованный пользователь
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - tokenAuth: []
+    post:
+      operationId: createForest
+      summary: Создать лес
+      description: Метод используется для создания леса
+      tags:
+        - forests
+      requestBody:
+        $ref: '#/components/requestBodies/ForestRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/ForestResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          description: Не авторизованный пользователь
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - tokenAuth: []
+  /forests/{id}:
+    get:
+      operationId: getForestById
+      summary: Получить лес по id
+      description: Метод используется для получения данных леса по id
+      tags:
+        - forests
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        200:
+          $ref: '#/components/responses/ForestResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          description: Не авторизованный пользователь
+        403:
+          description: Доступ запрещен
+        404:
+          description: Не найден
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - tokenAuth: []
+    put:
+      operationId: changeForest
+      summary: Изменить лес
+      description: Метод используется для изменения данных лесов
+      tags:
+        - forests
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        $ref: '#/components/requestBodies/ForestRequest'
+      responses:
+        200:
+          $ref: '#/components/responses/ForestResponse'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          description: Не авторизованный пользователь
+        403:
+          description: Доступ запрещен
+        404:
+          description: Не найден
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - tokenAuth: []
+    delete:
+      operationId: deleteForest
+      summary: Удалить лес
+      description: Метод используется для удаления леса пользователя
+      tags:
+        - forests
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        200:
+          description: Успешное удаление
+        401:
+          description: Не авторизованный пользователь
+        403:
+          description: Доступ запрещен
+        404:
+          description: Не найден
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      security:
+        - tokenAuth: []
+
+components:
+  parameters:
+    id:
+      in: query
+      name: id
+      description: идентификатор
+      type: integer
+      format: int64
+  requestBodies:
+    ForestRequest:
+      description: Тело запроса на создание или изменение леса
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForestDTO'
+  responses:
+    BadRequest:
+      description: Не корректно введенные данные
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+    ForestsResponse:
+      description: Тело ответа с данными леса
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForestDTO'
+    ForestsListResponse:
+      description: Список лесов
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ForestDTO'
+  schemas:
+    ForestDTO:
+      description: Леc деревьев привычек
+      properties:
+        id:
+          description: id леса
+          type: integer
+          format: int64
+        name:
+          description: Название леса
+          type: string
+        created-at:
+          description: Дата и время создания леса
+          type: string
+          format: date
+    ErrorDTO:
+      description: Стандартизированная DTO для ошибок
+      properties:
+        code:
+          description: Код ошибки
+          type: integer
+        message:
+          description: Сообщение об ошибке
+          type: string
+        timestamp:
+          description: Временная метка
+          type: string
+          format: date
+
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      description: jwt
+      name: jwt
+      in: header
+tags:
+  - name: forests
+    description: Леса деревьев привычек
