@@ -1,0 +1,1 @@
+docker compose --profile api build && docker compose --profile api up
