@@ -10,5 +10,6 @@
     <include file="003-create-changeset-trees-table.xml" relativeToChangelogFile="true"/>
     <include file="004-create-changeset-incrementations-log-table.xml" relativeToChangelogFile="true"/>
     <include file="100-insert-datas.xml" relativeToChangelogFile="true"/>
+    <include file="005-add-column-user-agreement-changeset-users-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
