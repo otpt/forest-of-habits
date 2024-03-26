@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final UserService userService;
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityProperties securityProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +35,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/login", "/auth/registration").permitAll()
+                        .requestMatchers(securityProperties.getIgnored()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement((sessionManagement) ->
