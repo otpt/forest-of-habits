@@ -4,12 +4,28 @@ services:
   postgres:
     image: postgres:16.2
     ports:
-      - 15432:5432
+      - "15432:5432"
     volumes:
       - forest_of_habits:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_USER=user
       - POSTGRES_DB=forest_of_habits
+  forest-of-habits-api:
+    depends_on:
+      - postgres
+    build: .
+    restart: on-failure
+    ports:
+      - "8097:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/forest_of_habits
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=pass
+    profiles: [api]
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
 volumes:
   forest_of_habits:
