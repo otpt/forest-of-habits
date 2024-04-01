@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -21,15 +23,16 @@ import java.time.LocalDateTime;
 @Table(name = "forests")
 public class Forest {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forests_seq_generator")
-    @SequenceGenerator(name = "forests_seq_generator", sequenceName = "forests_seq_generator", allocationSize = 1)
-    @Column(name = "forest_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "forest_name")
     private String name;
 
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

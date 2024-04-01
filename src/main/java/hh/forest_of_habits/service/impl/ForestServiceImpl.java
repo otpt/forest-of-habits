@@ -2,9 +2,13 @@ package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.ForestDTO;
 import hh.forest_of_habits.entity.Forest;
+import hh.forest_of_habits.entity.User;
+import hh.forest_of_habits.exception.ForbiddenException;
 import hh.forest_of_habits.exception.NotFoundException;
 import hh.forest_of_habits.mapper.SimpleMapper;
 import hh.forest_of_habits.repository.ForestRepository;
+import hh.forest_of_habits.repository.UserRepository;
+import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,40 +19,63 @@ import java.util.List;
 @Service
 public class ForestServiceImpl implements ForestService {
     final ForestRepository forestRepository;
-    final SimpleMapper mapper;
+    final UserRepository userRepository;
+    final AuthFacade auth;
+
     @Override
     public List<ForestDTO> getAll() {
-        List<Forest> forests = forestRepository.findAll();
+        String username = auth.getUsername();
+        List<Forest> forests = forestRepository.findByUser_name(username);
         return forests.stream()
-                .map(mapper::map)
+                .map(SimpleMapper::map)
                 .toList();
     }
 
     @Override
     public ForestDTO getById(Long id) {
-        Forest forest = forestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Лес с id " + id + " не найден"));
-        return mapper.map(forest);
+        Forest forest = getForest(id);
+        checkOwn(forest);
+        return SimpleMapper.map(forest);
     }
 
     @Override
     public ForestDTO create(ForestDTO forestDTO) {
-        Forest forest = mapper.map(forestDTO);
+        String username = auth.getUsername();
+        //TODO Можно взять из токена если его туда положить
+        User user = userRepository.findByName(username)
+                .orElseThrow(() -> new NotFoundException("Пользователь с username " + username + " не найден"));
+
+        Forest forest = SimpleMapper.map(forestDTO);
         forest.setId(null);
-        return mapper.map(forestRepository.save(forest));
+        forest.setUser(user);
+
+        return SimpleMapper.map(forestRepository.save(forest));
     }
 
     @Override
     public ForestDTO change(Long id, ForestDTO forestDTO) {
-        forestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Лес с id " + id + " не найден"));
-        Forest changedForest = mapper.map(forestDTO);
+        Forest forest = getForest(id);
+        checkOwn(forest);
+        Forest changedForest = SimpleMapper.map(forestDTO);
         changedForest.setId(id);
-        return mapper.map(forestRepository.save(changedForest));
+        return SimpleMapper.map(forestRepository.save(changedForest));
     }
 
     @Override
     public void delete(Long id) {
+        Forest forest = getForest(id);
+        checkOwn(forest);
         forestRepository.deleteById(id);
+    }
+
+    private Forest getForest(Long id) {
+        return forestRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Лес с id " + id + " не найден"));
+    }
+
+    private void checkOwn(Forest forest) {
+        String username = auth.getUsername();
+        if (!forest.getUser().getName().equals(username))
+            throw new ForbiddenException("Нет доступа");
     }
 }

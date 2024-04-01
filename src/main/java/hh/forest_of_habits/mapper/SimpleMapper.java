@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SimpleMapper {
-    public Forest map(ForestDTO forestDTO) {
+    public static Forest map(ForestDTO forestDTO) {
         return Forest.builder()
                 .id(forestDTO.getId())
                 .name(forestDTO.getName())
@@ -14,7 +14,7 @@ public class SimpleMapper {
                 .build();
     }
 
-    public ForestDTO map(Forest forest) {
+    public static ForestDTO map(Forest forest) {
         return ForestDTO.builder()
                 .id(forest.getId())
                 .name(forest.getName())
