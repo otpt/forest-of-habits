@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="admin">
+        <sql>ALTER TYPE tree_type_enum RENAME VALUE 'boolean_tree' TO 'BOOLEAN_TREE';</sql>
+        <sql>ALTER TYPE tree_type_enum RENAME VALUE 'inf_tree' TO 'UNLIMITED_TREE';</sql>
+        <sql>ALTER TYPE tree_type_enum RENAME VALUE 'limited_tree' TO 'LIMITED_TREE';</sql>
+        <sql>ALTER TYPE tree_type_enum RENAME VALUE 'periodic_tree' TO 'PERIODIC_TREE';</sql>
+
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'day' TO 'DAY';</sql>
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'week' TO 'WEEK';</sql>
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'month' TO 'MONTH';</sql>
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'quarter' TO 'QUARTER';</sql>
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'year' TO 'YEAR';</sql>
+        <sql>ALTER TYPE tree_period_enum RENAME VALUE 'none' TO 'NONE';</sql>
+    </changeSet>
+</databaseChangeLog>

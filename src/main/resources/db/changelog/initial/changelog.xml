@@ -11,5 +11,8 @@
     <include file="004-create-changeset-incrementations-log-table.xml" relativeToChangelogFile="true"/>
     <include file="100-insert-datas.xml" relativeToChangelogFile="true"/>
     <include file="005-add-column-user-agreement-changeset-users-table.xml" relativeToChangelogFile="true"/>
-
+    <include file="006-rename-column-type-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="007-change-column-type-incrementation-log.xml" relativeToChangelogFile="true"/>
+    <include file="008-rename-enum-values.xml" relativeToChangelogFile="true"/>
+    <include file="101-update-datas.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
