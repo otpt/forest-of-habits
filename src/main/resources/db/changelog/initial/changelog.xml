@@ -15,4 +15,5 @@
     <include file="007-change-column-type-incrementation-log.xml" relativeToChangelogFile="true"/>
     <include file="008-rename-enum-values.xml" relativeToChangelogFile="true"/>
     <include file="101-update-datas.xml" relativeToChangelogFile="true"/>
+    <include file="009-rename-column-limit-changeset-trees-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

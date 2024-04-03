@@ -2,6 +2,7 @@ package hh.forest_of_habits.controller;
 
 import hh.forest_of_habits.dto.IncrementationDto;
 import hh.forest_of_habits.dto.TreeFullDto;
+import hh.forest_of_habits.dto.TreeNewDto;
 import hh.forest_of_habits.dto.TreeShortDto;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class TreeController {
     }
 
     @PostMapping
-    TreeShortDto create(@RequestBody TreeShortDto dto) {
+    TreeShortDto create(@RequestBody TreeNewDto dto) {
         return treeService.create(dto);
     }
 
@@ -36,7 +37,7 @@ public class TreeController {
     }
 
     @PutMapping("/{id}")
-    TreeShortDto update(@PathVariable Long id, @RequestBody TreeShortDto dto) {
+    TreeShortDto update(@PathVariable Long id, @RequestBody TreeNewDto dto) {
         return treeService.update(id, dto);
     }
 

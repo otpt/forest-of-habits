@@ -1,37 +1,30 @@
 package hh.forest_of_habits.mapper;
 import hh.forest_of_habits.dto.TreeFullDto;
+import hh.forest_of_habits.dto.TreeNewDto;
 import hh.forest_of_habits.dto.TreeShortDto;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
+import hh.forest_of_habits.enums.TreePeriod;
+import hh.forest_of_habits.enums.TreeType;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class TreeMapper {
-    public static Tree toTree(TreeShortDto dto, Long id) {
+
+    public static Tree toTree(TreeNewDto dto) {
         return Tree.builder()
-                .id(id)
+                .id(null)
                 .name(dto.getName())
                 .createdAt(dto.getCreatedAt() == null ? LocalDateTime.now() : dto.getCreatedAt())
                 .description(dto.getDescription())
                 .limit(dto.getLimit())
                 .type(dto.getType())
-                .period(dto.getPeriod())
-                .build();
-    }
-    public static Tree toTree(TreeShortDto dto) {
-        return Tree.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .createdAt(dto.getCreatedAt() == null ? LocalDateTime.now() : dto.getCreatedAt())
-                .description(dto.getDescription())
-                .limit(dto.getLimit())
-                .type(dto.getType())
-                .period(dto.getPeriod())
+                .period(dto.getType() != TreeType.PERIODIC_TREE ? TreePeriod.NONE : dto.getPeriod())
+                .forestId(dto.getForestId())
                 .build();
     }
 
-    public static TreeShortDto toTreeShortDto(Tree tree, Integer counter) {
+    public static TreeShortDto toTreeShortDto(Tree tree) {
         return TreeShortDto.builder()
                 .id(tree.getId())
                 .name(tree.getName())
@@ -40,11 +33,11 @@ public class TreeMapper {
                 .limit(tree.getLimit())
                 .type(tree.getType())
                 .period(tree.getPeriod())
-                .counter(counter)
+                .counter(tree.getIncrementations().stream().mapToInt(Incrementation::getValue).sum())
                 .build();
     }
 
-    public static TreeFullDto toTreeFullDto(Tree tree, List<Incrementation> incrementations) {
+    public static TreeFullDto toTreeFullDto(Tree tree) {
         return TreeFullDto.builder()
                 .id(tree.getId())
                 .name(tree.getName())
@@ -53,7 +46,7 @@ public class TreeMapper {
                 .limit(tree.getLimit())
                 .type(tree.getType())
                 .period(tree.getPeriod())
-                .increments(incrementations.stream().map(IncrementationMapper::toDto).toList())
+                .increments(tree.getIncrementations().stream().map(IncrementationMapper::toDto).toList())
                 .build();
     }
 }
