@@ -1,0 +1,27 @@
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:15432/forest_of_habits
+        username: user
+        password: pass
+        driver-class-name: org.postgresql.Driver
+    liquibase:
+        enabled: true
+        change-log: classpath:/db/changelog/changelog-master.xml
+security:
+    ignored:
+        - /auth/login
+        - /auth/registration
+        - ${springdoc.swagger-ui.path}
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /swagger-ui.html
+jwt:
+    header: Authorization
+    lifetime: 30m
+    secret: ew!s34df34543@zxcliu45$^sd&^%234455#$%^nmssd3
+springdoc:
+    swagger-ui:
+        path: /swagger
+logging:
+    level:
+        liquibase: INFO
