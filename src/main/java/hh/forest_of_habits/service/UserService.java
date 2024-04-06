@@ -1,6 +1,6 @@
 package hh.forest_of_habits.service;
 
-import hh.forest_of_habits.dto.RegistrationRequest;
+import hh.forest_of_habits.dto.request.RegistrationRequest;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +37,13 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void createNewUser(RegistrationRequest request) {
+    public void createNewUser(RegistrationRequest registrationRequest) {
 
         User user = new User();
-        user.setName(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setEmail(request.getEmail());
-        user.setAgreementConfirmation(request.getAgreementConfirmation());
+        user.setName(registrationRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setEmail(registrationRequest.getEmail());
+        user.setAgreementConfirmation(registrationRequest.getAgreementConfirmation());
         userRepository.save(user);
     }
 }

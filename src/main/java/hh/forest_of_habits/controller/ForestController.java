@@ -1,6 +1,7 @@
 package hh.forest_of_habits.controller;
 
-import hh.forest_of_habits.dto.ForestDTO;
+import hh.forest_of_habits.dto.request.ForestRequest;
+import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.service.ForestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,23 +22,23 @@ public class ForestController {
     final ForestService forestService;
 
     @GetMapping
-    public List<ForestDTO> getAll() {
+    public List<ForestResponse> getAll() {
         return forestService.getAll();
     }
 
     @PostMapping
-    ForestDTO create(@RequestBody ForestDTO forestDTO) {
-        return forestService.create(forestDTO);
+    ForestResponse create(@RequestBody ForestRequest forestRequest) {
+        return forestService.create(forestRequest);
     }
 
     @GetMapping("/{id}")
-    ForestDTO getById(@PathVariable Long id) {
+    ForestResponse getById(@PathVariable Long id) {
         return forestService.getById(id);
     }
 
     @PutMapping("/{id}")
-    ForestDTO change(@PathVariable Long id, @RequestBody ForestDTO forestDTO) {
-        return forestService.change(id, forestDTO);
+    ForestResponse change(@PathVariable Long id, @RequestBody ForestRequest forestRequest) {
+        return forestService.change(id, forestRequest);
     }
 
     @DeleteMapping("/{id}")

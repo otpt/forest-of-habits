@@ -1,10 +1,11 @@
 package hh.forest_of_habits.service.impl;
 
-import hh.forest_of_habits.dto.ForestDTO;
+import hh.forest_of_habits.dto.request.ForestRequest;
+import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.NotFoundException;
-import hh.forest_of_habits.mapper.SimpleMapper;
+import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.AuthFacade;
@@ -20,42 +21,39 @@ public class ForestServiceImpl implements ForestService {
     final ForestRepository forestRepository;
     final UserRepository userRepository;
     final AuthFacade auth;
+    final ForestMapper mapper;
 
     @Override
-    public List<ForestDTO> getAll() {
+    public List<ForestResponse> getAll() {
         String username = auth.getUsername();
-        List<Forest> forests = forestRepository.findByUser_name(username);
-        return forests.stream()
-                .map(SimpleMapper::map)
-                .toList();
+        return mapper.mapAll(forestRepository.findByUser_name(username));
     }
 
     @Override
-    public ForestDTO getById(Long id) {
+    public ForestResponse getById(Long id) {
         Forest forest = getForest(id);
-        return SimpleMapper.map(forest);
+        return mapper.map(forest);
     }
 
     @Override
-    public ForestDTO create(ForestDTO forestDTO) {
+    public ForestResponse create(ForestRequest forestRequest) {
         String username = auth.getUsername();
         //TODO Можно взять из токена если его туда положить
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new NotFoundException("Пользователь с username " + username + " не найден"));
 
-        Forest forest = SimpleMapper.map(forestDTO);
-        forest.setId(null);
+        Forest forest = mapper.map(forestRequest);
         forest.setUser(user);
 
-        return SimpleMapper.map(forestRepository.save(forest));
+        return mapper.map(forestRepository.save(forest));
     }
 
     @Override
-    public ForestDTO change(Long id, ForestDTO forestDTO) {
+    public ForestResponse change(Long id, ForestRequest forestRequest) {
         Forest forest = getForest(id);
-        Forest changedForest = SimpleMapper.map(forestDTO);
+        Forest changedForest = mapper.map(forestRequest);
         changedForest.setId(id);
-        return SimpleMapper.map(forestRepository.save(changedForest));
+        return mapper.map(forestRepository.save(changedForest));
     }
 
     @Override

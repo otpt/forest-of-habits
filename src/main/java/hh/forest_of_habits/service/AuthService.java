@@ -1,9 +1,9 @@
 package hh.forest_of_habits.service;
 
-import hh.forest_of_habits.dto.AuthRequest;
-import hh.forest_of_habits.dto.AuthResponse;
-import hh.forest_of_habits.dto.ErrorDto;
-import hh.forest_of_habits.dto.RegistrationRequest;
+import hh.forest_of_habits.dto.request.AuthRequest;
+import hh.forest_of_habits.dto.response.AuthResponse;
+import hh.forest_of_habits.dto.request.RegistrationRequest;
+import hh.forest_of_habits.dto.response.ErrorResponse;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,32 +35,29 @@ public class AuthService {
                     authRequest.getPassword()
             ));
         } catch (BadCredentialsException exception) {
-            return new ResponseEntity<>(
-                    new ErrorDto(
-                            HttpStatus.UNAUTHORIZED.value(),
-                            "Неверный логин или пароль"
-                    ),
-                    HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.builder()
+                            .message("Неверный логин или пароль")
+                            .build());
         }
         return ResponseEntity.ok(
                 authResponse((UserDetails) authentication.getPrincipal()));
     }
 
-    public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<?> registration(@RequestBody RegistrationRequest registrationRequest) {
 
-        if (userService.findByName(request.getUsername()).isPresent()) {
-            return new ResponseEntity<>(new ErrorDto(
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Пользователь уже существует"),
-                    HttpStatus.BAD_REQUEST
-            );
+        if (userService.findByName(registrationRequest.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(ErrorResponse.builder()
+                            .message("Пользователь уже существует")
+                            .build());
         }
 
-        userService.createNewUser(request);
+        userService.createNewUser(registrationRequest);
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                request.getUsername(),
-                request.getPassword(),
+                registrationRequest.getUsername(),
+                registrationRequest.getPassword(),
                 List.of()
         );
         return ResponseEntity.ok(authResponse(userDetails));

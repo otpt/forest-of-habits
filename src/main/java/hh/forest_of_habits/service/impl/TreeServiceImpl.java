@@ -1,10 +1,11 @@
 package hh.forest_of_habits.service.impl;
 
-import hh.forest_of_habits.dto.IncrementationDto;
-import hh.forest_of_habits.dto.TreeFullDto;
-import hh.forest_of_habits.dto.TreeNewDto;
-import hh.forest_of_habits.dto.TreeShortDto;
+import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
+import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
 import hh.forest_of_habits.exception.NotFoundException;
 import hh.forest_of_habits.mapper.IncrementationMapper;
@@ -28,44 +29,49 @@ public class TreeServiceImpl implements TreeService {
     private final TreeRepository treeRepository;
     private final IncrementationRepository incrementationRepository;
     private final AuthFacade auth;
+    private final TreeMapper treeMapper;
+    private final IncrementationMapper incrementationMapper;
 
     @Override
-    public List<TreeShortDto> getAllByForestId(Long forestId) {
+    public List<TreeResponse> getAllByForestId(Long forestId) {
         Forest forest = forestRepository.findById(forestId)
                 .orElseThrow(() -> new NotFoundException("Лес с id " + forestId + " не найден"));
         auth.checkOwn(forest);
-        return forest.getTrees()
-                .stream()
-                .map(TreeMapper::toTreeShortDto)
-                .toList();
+        return treeMapper.mapAll(forest.getTrees());
     }
 
     @Override
-    public TreeFullDto getById(Long id) {
+    public TreeFullResponse getById(Long id) {
         Tree tree = getTree(id);
-        return TreeMapper.toTreeFullDto(tree);
+
+        return mapToTreeFullResponse(tree);
     }
 
     @Override
-    public TreeShortDto create(TreeNewDto dto) {
-        Forest forest = forestRepository.findById(dto.getForestId())
-                .orElseThrow(() -> new NotFoundException("Лес с id " + dto.getForestId() + " не найден"));
+    public TreeResponse create(TreeRequest treeRequest) {
+        Forest forest = forestRepository.findById(treeRequest.getForestId())
+                .orElseThrow(() -> new NotFoundException("Лес с id " + treeRequest.getForestId() + " не найден"));
         auth.checkOwn(forest);
-        Tree savedTree = treeRepository.save(TreeMapper.toTree(dto, forest));
-        return TreeMapper.toTreeShortDto(savedTree);
+        Tree tree = treeMapper.map(treeRequest);
+        tree.setForest(forest);
+        Tree savedTree = treeRepository.save(tree);
+
+        return mapToTreeResponse(savedTree);
     }
 
     @Override
-    public TreeShortDto update(Long id, TreeNewDto dto) {
+    public TreeResponse update(Long id, TreeRequest treeRequest) {
         Tree tree = getTree(id);
 
-        Optional.ofNullable(dto.getCreatedAt()).ifPresent(tree::setCreatedAt);
-        Optional.ofNullable(dto.getDescription()).ifPresent(tree::setDescription);
-        Optional.ofNullable(dto.getLimit()).ifPresent(tree::setLimit);
-        Optional.ofNullable(dto.getPeriod()).ifPresent(tree::setPeriod);
-        Optional.ofNullable(dto.getName()).ifPresent(tree::setName);
+        Optional.ofNullable(treeRequest.getCreatedAt()).ifPresent(tree::setCreatedAt);
+        Optional.ofNullable(treeRequest.getDescription()).ifPresent(tree::setDescription);
+        Optional.ofNullable(treeRequest.getLimit()).ifPresent(tree::setLimit);
+        Optional.ofNullable(treeRequest.getPeriod()).ifPresent(tree::setPeriod);
+        Optional.ofNullable(treeRequest.getName()).ifPresent(tree::setName);
 
-        return TreeMapper.toTreeShortDto(treeRepository.save(tree));
+        Tree savedTree = treeRepository.save(tree);
+
+        return mapToTreeResponse(savedTree);
     }
 
     @Override
@@ -75,9 +81,11 @@ public class TreeServiceImpl implements TreeService {
     }
 
     @Override
-    public TreeFullDto addIncrementation(IncrementationDto dto, Long treeId) {
+    public TreeFullResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId) {
         getTree(treeId);
-        incrementationRepository.save(IncrementationMapper.toModel(dto, treeId));
+        Incrementation incrementation = incrementationMapper.map(incrementationRequest);
+        incrementation.setTreeId(treeId);
+        incrementationRepository.save(incrementation);
         return getById(treeId);
     }
 
@@ -86,5 +94,20 @@ public class TreeServiceImpl implements TreeService {
                 .orElseThrow(() -> new NotFoundException(String.format("Дерево с id = %d не найдено", treeId)));
         auth.checkOwn(tree);
         return tree;
+    }
+
+    private TreeResponse mapToTreeResponse(Tree tree) {
+        TreeResponse response = (TreeResponse) treeMapper.map(tree);
+        response.setCounter(tree.getIncrementations()
+                .stream()
+                .mapToInt(Incrementation::getValue)
+                .sum());
+        return response;
+    }
+
+    private TreeFullResponse mapToTreeFullResponse(Tree tree) {
+        TreeFullResponse response = (TreeFullResponse) treeMapper.map(tree);
+        response.setIncrements(incrementationMapper.mapAll(tree.getIncrementations()));
+        return response;
     }
 }
