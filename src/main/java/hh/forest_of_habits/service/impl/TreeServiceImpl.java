@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -40,30 +41,27 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeFullDto getById(Long id) {
-        Tree tree = treeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("Дерево с id = %d не найдено", id)));
-        checkForestOwn(tree.getForestId());
+        Tree tree = checkOwn(id);
         return TreeMapper.toTreeFullDto(tree);
     }
 
     @Override
     public TreeShortDto create(TreeNewDto dto) {
-        checkForestOwn(dto.getForestId());
-        Tree savedTree = treeRepository.save(TreeMapper.toTree(dto));
+        Forest forest = checkForestOwn(dto.getForestId());
+        Tree savedTree = treeRepository.save(TreeMapper.toTree(dto, forest));
         savedTree.setIncrementations(List.of());
         return TreeMapper.toTreeShortDto(savedTree);
     }
 
     @Override
     public TreeShortDto update(Long id, TreeNewDto dto) {
-        checkOwn(id);
-        Tree tree = treeRepository.findById(id).get();
+        Tree tree = checkOwn(id);
 
-        if (dto.getCreatedAt() != null) tree.setCreatedAt(dto.getCreatedAt());
-        if (dto.getDescription() != null) tree.setDescription(dto.getDescription());
-        if (dto.getLimit() != null) tree.setLimit(dto.getLimit());
-        if (dto.getPeriod() != null) tree.setPeriod(dto.getPeriod());
-        if (dto.getName() != null) tree.setName(dto.getName());
+        Optional.ofNullable(dto.getCreatedAt()).ifPresent(tree::setCreatedAt);
+        Optional.ofNullable(dto.getDescription()).ifPresent(tree::setDescription);
+        Optional.ofNullable(dto.getLimit()).ifPresent(tree::setLimit);
+        Optional.ofNullable(dto.getPeriod()).ifPresent(tree::setPeriod);
+        Optional.ofNullable(dto.getName()).ifPresent(tree::setName);
 
         return TreeMapper.toTreeShortDto(treeRepository.save(tree));
     }
@@ -81,24 +79,25 @@ public class TreeServiceImpl implements TreeService {
         return getById(treeId);
     }
 
-    private void checkForestOwn(Long forestId) {
+    private Forest checkForestOwn(Long forestId) {
         Forest forest = forestRepository.findById(forestId)
                 .orElseThrow(() -> new NotFoundException(String.format("Лес с id = %d не найдено", forestId)));
 
         String username = auth.getUsername();
         if (!forest.getUser().getName().equals(username))
             throw new ForbiddenException("Нет доступа");
+
+        return forest;
     }
 
-    private void checkOwn(Long treeId) {
+    private Tree checkOwn(Long treeId) {
         Tree tree = treeRepository.findById(treeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Дерево с id = %d не найдено", treeId)));
 
-        Forest forest = forestRepository.findById(tree.getForestId())
-                .orElseThrow(() -> new NotFoundException(String.format("Лес с id = %d не найдено", tree.getForestId())));
-
         String username = auth.getUsername();
-        if (!forest.getUser().getName().equals(username))
+        if (!tree.getForest().getUser().getName().equals(username))
             throw new ForbiddenException("Нет доступа");
+
+        return tree;
     }
 }

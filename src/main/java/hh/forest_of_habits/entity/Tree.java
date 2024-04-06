@@ -40,10 +40,11 @@ public class Tree {
     @Column(name = "tree_limit")
     private Integer limit;
 
-    @Column(name = "forest_id")
-    private Long forestId;
-
     @OneToMany
     @JoinColumn(name = "tree_id")
     private List<Incrementation> incrementations;
+
+    @ManyToOne
+    @JoinColumn(name = "forest_id")
+    private Forest forest;
 }

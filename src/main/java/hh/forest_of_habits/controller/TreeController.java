@@ -16,7 +16,7 @@ import java.util.List;
 public class TreeController {
     private final TreeService treeService;
 
-    @GetMapping("/all/{id}")
+    @GetMapping("/by_forest/{id}")
     public List<TreeShortDto> getAllByForestId(@PathVariable Long id) {
         return treeService.getAllByForestId(id);
     }
