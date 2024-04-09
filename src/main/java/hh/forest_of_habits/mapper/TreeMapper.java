@@ -9,6 +9,7 @@ import hh.forest_of_habits.enums.TreePeriod;
 import hh.forest_of_habits.enums.TreeType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class TreeMapper {
 
@@ -22,6 +23,7 @@ public class TreeMapper {
                 .type(dto.getType())
                 .period(dto.getType() != TreeType.PERIODIC_TREE ? TreePeriod.NONE : dto.getPeriod())
                 .forest(forest)
+                .incrementations(new ArrayList<>())
                 .build();
     }
 
