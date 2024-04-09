@@ -36,7 +36,7 @@ public class TreeController {
         return treeService.getById(id);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     TreeShortDto update(@PathVariable Long id, @RequestBody TreeNewDto dto) {
         return treeService.update(id, dto);
     }
