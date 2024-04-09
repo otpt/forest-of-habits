@@ -12,8 +12,8 @@ import hh.forest_of_habits.mapper.TreeMapper;
 import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
+import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.TreeService;
-import hh.forest_of_habits.utils.CheckOwnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +27,13 @@ public class TreeServiceImpl implements TreeService {
     private final ForestRepository forestRepository;
     private final TreeRepository treeRepository;
     private final IncrementationRepository incrementationRepository;
+    private final AuthFacade auth;
 
     @Override
     public List<TreeShortDto> getAllByForestId(Long forestId) {
         Forest forest = forestRepository.findById(forestId)
                 .orElseThrow(() -> new NotFoundException("Лес с id " + forestId + " не найден"));
-        CheckOwnUtils.checkOwn(forest);
+        auth.checkOwn(forest);
         return forest.getTrees()
                 .stream()
                 .map(TreeMapper::toTreeShortDto)
@@ -42,7 +43,6 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public TreeFullDto getById(Long id) {
         Tree tree = getTree(id);
-        CheckOwnUtils.checkOwn(tree.getForest());
         return TreeMapper.toTreeFullDto(tree);
     }
 
@@ -50,7 +50,7 @@ public class TreeServiceImpl implements TreeService {
     public TreeShortDto create(TreeNewDto dto) {
         Forest forest = forestRepository.findById(dto.getForestId())
                 .orElseThrow(() -> new NotFoundException("Лес с id " + dto.getForestId() + " не найден"));
-        CheckOwnUtils.checkOwn(forest);
+        auth.checkOwn(forest);
         Tree savedTree = treeRepository.save(TreeMapper.toTree(dto, forest));
         return TreeMapper.toTreeShortDto(savedTree);
     }
@@ -58,7 +58,6 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public TreeShortDto update(Long id, TreeNewDto dto) {
         Tree tree = getTree(id);
-        CheckOwnUtils.checkOwn(tree.getForest());
 
         Optional.ofNullable(dto.getCreatedAt()).ifPresent(tree::setCreatedAt);
         Optional.ofNullable(dto.getDescription()).ifPresent(tree::setDescription);
@@ -72,19 +71,20 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public void delete(Long id) {
         Tree tree = getTree(id);
-        CheckOwnUtils.checkOwn(tree.getForest());
         treeRepository.delete(tree);
     }
 
     @Override
     public TreeFullDto addIncrementation(IncrementationDto dto, Long treeId) {
-        CheckOwnUtils.checkOwn(getTree(treeId).getForest());
+        getTree(treeId);
         incrementationRepository.save(IncrementationMapper.toModel(dto, treeId));
         return getById(treeId);
     }
 
     private Tree getTree(Long treeId) {
-        return treeRepository.findById(treeId)
+        Tree tree = treeRepository.findById(treeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Дерево с id = %d не найдено", treeId)));
+        auth.checkOwn(tree);
+        return tree;
     }
 }

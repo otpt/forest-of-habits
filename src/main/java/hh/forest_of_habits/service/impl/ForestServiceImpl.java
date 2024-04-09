@@ -9,7 +9,6 @@ import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
-import hh.forest_of_habits.utils.CheckOwnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,6 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public ForestDTO getById(Long id) {
         Forest forest = getForest(id);
-        CheckOwnUtils.checkOwn(forest);
         return SimpleMapper.map(forest);
     }
 
@@ -55,7 +53,6 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public ForestDTO change(Long id, ForestDTO forestDTO) {
         Forest forest = getForest(id);
-        CheckOwnUtils.checkOwn(forest);
         Forest changedForest = SimpleMapper.map(forestDTO);
         changedForest.setId(id);
         return SimpleMapper.map(forestRepository.save(changedForest));
@@ -64,12 +61,13 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public void delete(Long id) {
         Forest forest = getForest(id);
-        CheckOwnUtils.checkOwn(forest);
         forestRepository.deleteById(id);
     }
 
     private Forest getForest(Long id) {
-        return forestRepository.findById(id)
+        Forest forest = forestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Лес с id " + id + " не найден"));
+        auth.checkOwn(forest);
+        return forest;
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TreeRepository extends CrudRepository<Tree, Long> {
-    List<Tree> findAllByForestId(Long forestId);
+    List<Tree> findAllByForest_id(Long forestId);
 }
