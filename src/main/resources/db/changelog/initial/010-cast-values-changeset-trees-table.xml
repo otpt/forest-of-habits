@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="cast_columns_trees" author="n.erko">
+        <sql>ALTER TABLE trees ALTER COLUMN period TYPE VARCHAR;</sql>
+        <sql>ALTER TABLE trees ALTER COLUMN tree_type TYPE VARCHAR;</sql>
+    </changeSet>
+</databaseChangeLog>

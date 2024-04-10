@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="admin">
+        <sql>DELETE FROM trees;</sql>
+    </changeSet>
+
+    <changeSet id="insert_tree1" author="n.erko">
+        <insert schemaName="public" tableName="trees">
+            <column name="forest_id" valueNumeric="1"/>
+            <column name="name" value="Собеседования"/>
+            <column name="description" value="Провести 5 собеседований в команду"/>
+            <column name="tree_type" value="LIMITED_TREE"/>
+            <column name="limit" valueNumeric="5"/>
+        </insert>
+    </changeSet>
+    <changeSet id="insert_tree2" author="n.erko">
+        <insert schemaName="public" tableName="trees">
+            <column name="forest_id" valueNumeric="1"/>
+            <column name="name" value="Прогулки с собакой"/>
+            <column name="description" value="Ежедневно гулять с собакой"/>
+            <column name="tree_type" value="PERIODIC_TREE"/>
+            <column name="limit" valueNumeric="1"/>
+            <column name="period" value="DAY"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_tree3" author="n.erko">
+        <insert schemaName="public" tableName="trees">
+            <column name="forest_id" valueNumeric="1"/>
+            <column name="name" value="Расчистить электронную почту"/>
+            <column name="tree_type" value="BOOLEAN_TREE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_tree4" author="n.erko">
+        <insert schemaName="public" tableName="trees">
+            <column name="forest_id" valueNumeric="1"/>
+            <column name="name" value="Делать что-то хорошее"/>
+            <column name="tree_type" value="UNLIMITED_TREE"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
