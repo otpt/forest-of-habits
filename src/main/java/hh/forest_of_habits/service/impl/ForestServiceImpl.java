@@ -3,7 +3,6 @@ package hh.forest_of_habits.service.impl;
 import hh.forest_of_habits.dto.ForestDTO;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
-import hh.forest_of_habits.exception.ForbiddenException;
 import hh.forest_of_habits.exception.NotFoundException;
 import hh.forest_of_habits.mapper.SimpleMapper;
 import hh.forest_of_habits.repository.ForestRepository;
@@ -34,7 +33,6 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public ForestDTO getById(Long id) {
         Forest forest = getForest(id);
-        checkOwn(forest);
         return SimpleMapper.map(forest);
     }
 
@@ -55,7 +53,6 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public ForestDTO change(Long id, ForestDTO forestDTO) {
         Forest forest = getForest(id);
-        checkOwn(forest);
         Forest changedForest = SimpleMapper.map(forestDTO);
         changedForest.setId(id);
         return SimpleMapper.map(forestRepository.save(changedForest));
@@ -64,18 +61,13 @@ public class ForestServiceImpl implements ForestService {
     @Override
     public void delete(Long id) {
         Forest forest = getForest(id);
-        checkOwn(forest);
         forestRepository.deleteById(id);
     }
 
     private Forest getForest(Long id) {
-        return forestRepository.findById(id)
+        Forest forest = forestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Лес с id " + id + " не найден"));
-    }
-
-    private void checkOwn(Forest forest) {
-        String username = auth.getUsername();
-        if (!forest.getUser().getName().equals(username))
-            throw new ForbiddenException("Нет доступа");
+        auth.checkOwn(forest);
+        return forest;
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="drop_column_value" author="n.erko">
+        <dropColumn tableName="incrementation_log" columnName="value"/>
+    </changeSet>
+    <changeSet id="add_new_column" author="n.erko">
+        <addColumn tableName="incrementation_log">
+            <column name="value" type="INT"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
