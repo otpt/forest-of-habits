@@ -52,7 +52,6 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public ForestDTO change(Long id, ForestDTO forestDTO) {
-        Forest forest = getForest(id);
         Forest changedForest = SimpleMapper.map(forestDTO);
         changedForest.setId(id);
         return SimpleMapper.map(forestRepository.save(changedForest));
@@ -60,7 +59,6 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public void delete(Long id) {
-        Forest forest = getForest(id);
         forestRepository.deleteById(id);
     }
 
