@@ -2,6 +2,7 @@ package hh.forest_of_habits.controller;
 
 import hh.forest_of_habits.dto.request.AuthRequest;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
+import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
-        return authService.login(authRequest);
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+        return ResponseEntity.ok(authService.login(authRequest));
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
-        return authService.registration(request);
+    public ResponseEntity<AuthResponse> registration(@RequestBody RegistrationRequest request) {
+        return ResponseEntity.ok(authService.registration(request));
     }
 }

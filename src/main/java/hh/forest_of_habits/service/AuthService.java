@@ -3,13 +3,11 @@ package hh.forest_of_habits.service;
 import hh.forest_of_habits.dto.request.AuthRequest;
 import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
-import hh.forest_of_habits.dto.response.ErrorResponse;
+import hh.forest_of_habits.exception.BadCredentialsException;
+import hh.forest_of_habits.exception.UserAlreadyExistsException;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,41 +24,35 @@ public class AuthService {
     private final JwtTokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
 
-    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
-
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
         Authentication authentication;
         try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(),
-                    authRequest.getPassword()
-            ));
-        } catch (BadCredentialsException exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ErrorResponse.builder()
-                            .message("Неверный логин или пароль")
-                            .build());
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getUsername(),
+                            authRequest.getPassword()
+                    ));
+        } catch (Exception exception) {
+            throw new BadCredentialsException();
         }
-        return ResponseEntity.ok(
-                authResponse((UserDetails) authentication.getPrincipal()));
+        return authResponse((UserDetails) authentication.getPrincipal());
     }
 
-    public ResponseEntity<?> registration(@RequestBody RegistrationRequest registrationRequest) {
+    public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {
+        String username = registrationRequest.getUsername();
+        String password = registrationRequest.getPassword();
 
-        if (userService.findByName(registrationRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse.builder()
-                            .message("Пользователь уже существует")
-                            .build());
-        }
+        if (userService.findByName(username).isPresent())
+            throw new UserAlreadyExistsException(username);
 
         userService.createNewUser(registrationRequest);
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                registrationRequest.getUsername(),
-                registrationRequest.getPassword(),
+                username,
+                password,
                 List.of()
         );
-        return ResponseEntity.ok(authResponse(userDetails));
+        return authResponse(userDetails);
     }
 
     private AuthResponse authResponse(UserDetails userDetails) {

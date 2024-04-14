@@ -8,12 +8,14 @@ import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
 import hh.forest_of_habits.exception.NotFoundException;
+import hh.forest_of_habits.exception.TreeNotFoundException;
 import hh.forest_of_habits.mapper.IncrementationMapper;
 import hh.forest_of_habits.mapper.TreeMapper;
 import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.service.AuthFacade;
+import hh.forest_of_habits.service.ForestService;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class TreeServiceImpl implements TreeService {
-
-    private final ForestRepository forestRepository;
+    private final ForestService forestService;
     private final TreeRepository treeRepository;
     private final IncrementationRepository incrementationRepository;
     private final AuthFacade auth;
@@ -34,9 +35,7 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public List<TreeResponse> getAllByForestId(Long forestId) {
-        Forest forest = forestRepository.findById(forestId)
-                .orElseThrow(() -> new NotFoundException("Лес с id " + forestId + " не найден"));
-        auth.checkOwn(forest);
+        Forest forest = forestService.getForest(forestId);
         return treeMapper.mapAll(forest.getTrees());
     }
 
@@ -49,9 +48,7 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeResponse create(TreeRequest treeRequest) {
-        Forest forest = forestRepository.findById(treeRequest.getForestId())
-                .orElseThrow(() -> new NotFoundException("Лес с id " + treeRequest.getForestId() + " не найден"));
-        auth.checkOwn(forest);
+        Forest forest = forestService.getForest(treeRequest.getForestId());
         Tree tree = treeMapper.map(treeRequest);
         tree.setForest(forest);
         Tree savedTree = treeRepository.save(tree);
@@ -91,7 +88,7 @@ public class TreeServiceImpl implements TreeService {
 
     private Tree getTree(Long treeId) {
         Tree tree = treeRepository.findById(treeId)
-                .orElseThrow(() -> new NotFoundException(String.format("Дерево с id = %d не найдено", treeId)));
+                .orElseThrow(() -> new TreeNotFoundException(treeId));
         auth.checkOwn(tree);
         return tree;
     }
