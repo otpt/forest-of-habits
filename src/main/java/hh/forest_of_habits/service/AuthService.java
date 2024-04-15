@@ -65,6 +65,9 @@ public class AuthService {
 
     private AuthResponse authResponse(UserDetails userDetails) {
         String token = tokenUtils.generateToken(userDetails);
-        return new AuthResponse(token, userDetails.getUsername());
+        return AuthResponse.builder()
+                .token(token)
+                .userName(userDetails.getUsername())
+                .build();
     }
 }
