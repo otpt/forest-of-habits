@@ -97,7 +97,7 @@ public class TreeServiceImpl implements TreeService {
     }
 
     private TreeResponse mapToTreeResponse(Tree tree) {
-        TreeResponse response = (TreeResponse) treeMapper.map(tree);
+        TreeResponse response = treeMapper.mapToShort(tree);
         response.setCounter(tree.getIncrementations()
                 .stream()
                 .mapToInt(Incrementation::getValue)
@@ -106,7 +106,7 @@ public class TreeServiceImpl implements TreeService {
     }
 
     private TreeFullResponse mapToTreeFullResponse(Tree tree) {
-        TreeFullResponse response = (TreeFullResponse) treeMapper.map(tree);
+        TreeFullResponse response = treeMapper.mapToFull(tree);
         response.setIncrements(incrementationMapper.mapAll(tree.getIncrementations()));
         return response;
     }
