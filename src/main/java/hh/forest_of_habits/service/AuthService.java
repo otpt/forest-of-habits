@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,6 +68,6 @@ public class AuthService {
 
     private AuthResponse authResponse(UserDetails userDetails) {
         String token = tokenUtils.generateToken(userDetails);
-        return new AuthResponse(token);
+        return new AuthResponse(token, userDetails.getUsername());
     }
 }
