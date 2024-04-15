@@ -1,21 +1,22 @@
 package hh.forest_of_habits.service;
-import hh.forest_of_habits.dto.IncrementationDto;
-import hh.forest_of_habits.dto.TreeFullDto;
-import hh.forest_of_habits.dto.TreeNewDto;
-import hh.forest_of_habits.dto.TreeShortDto;
+
+import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeResponse;
 
 import java.util.List;
 
 public interface TreeService {
-    List<TreeShortDto> getAllByForestId(Long forestId);
+    List<TreeResponse> getAllByForestId(Long forestId);
 
-    TreeFullDto getById(Long id);
+    TreeFullResponse getById(Long id);
 
-    TreeShortDto create(TreeNewDto dto);
+    TreeResponse create(TreeRequest treeRequest);
 
-    TreeShortDto update(Long id, TreeNewDto dto);
+    TreeResponse update(Long id, TreeRequest treeRequest);
 
     void delete(Long id);
 
-    TreeFullDto addIncrementation(IncrementationDto dto, Long treeId);
+    TreeFullResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId);
 }

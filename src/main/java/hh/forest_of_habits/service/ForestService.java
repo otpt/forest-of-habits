@@ -1,17 +1,18 @@
 package hh.forest_of_habits.service;
 
-import hh.forest_of_habits.dto.ForestDTO;
+import hh.forest_of_habits.dto.request.ForestRequest;
+import hh.forest_of_habits.dto.response.ForestResponse;
 
 import java.util.List;
 
 public interface ForestService {
-    List<ForestDTO> getAll();
+    List<ForestResponse> getAll();
 
-    ForestDTO getById(Long id);
+    ForestResponse getById(Long id);
 
-    ForestDTO create(ForestDTO forest);
+    ForestResponse create(ForestRequest forestRequest);
 
-    ForestDTO change(Long id, ForestDTO forest);
+    ForestResponse change(Long id, ForestRequest forestRequest);
 
     void delete(Long id);
 }
