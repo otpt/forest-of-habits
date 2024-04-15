@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@DiscriminatorColumn(name = "tree_type", discriminatorType = DiscriminatorType.STRING)
 public class Tree {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
