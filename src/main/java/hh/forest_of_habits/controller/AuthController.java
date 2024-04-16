@@ -1,7 +1,7 @@
 package hh.forest_of_habits.controller;
 
-import hh.forest_of_habits.dto.AuthRequest;
-import hh.forest_of_habits.dto.RegistrationRequest;
+import hh.forest_of_habits.dto.request.AuthRequest;
+import hh.forest_of_habits.dto.request.RegistrationRequest;
 import hh.forest_of_habits.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

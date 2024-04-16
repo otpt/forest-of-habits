@@ -1,23 +1,17 @@
 package hh.forest_of_habits.mapper;
 
-import hh.forest_of_habits.dto.IncrementationDto;
+import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.response.IncrementationResponse;
 import hh.forest_of_habits.entity.Incrementation;
+import org.mapstruct.Mapper;
 
-public class IncrementationMapper {
-    public static IncrementationDto toDto(Incrementation model) {
-        return IncrementationDto.builder()
-                .id(model.getId())
-                .date(model.getDate())
-                .value(model.getValue())
-                .build();
-    }
+import java.util.List;
 
-    public static Incrementation toModel(IncrementationDto dto, Long treeId) {
-        return Incrementation.builder()
-                .id(dto.getId())
-                .treeId(treeId)
-                .date(dto.getDate())
-                .value(dto.getValue())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public abstract class IncrementationMapper {
+    public abstract IncrementationResponse map(Incrementation s);
+
+    public abstract Incrementation map(IncrementationRequest s);
+
+    public abstract List<IncrementationResponse> mapAll(List<Incrementation> s);
 }

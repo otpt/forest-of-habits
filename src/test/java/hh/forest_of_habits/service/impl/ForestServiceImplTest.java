@@ -1,10 +1,12 @@
 package hh.forest_of_habits.service.impl;
 
-import hh.forest_of_habits.dto.ForestDTO;
+import hh.forest_of_habits.dto.request.ForestRequest;
+import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.ForbiddenException;
 import hh.forest_of_habits.exception.NotFoundException;
+import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.AuthFacade;
@@ -19,13 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Disabled
@@ -37,6 +37,8 @@ class ForestServiceImplTest {
     UserRepository userRepository;
     @Mock
     AuthFacade auth;
+    @Mock
+    ForestMapper mapper;
     @InjectMocks
     ForestServiceImpl testing;
 
@@ -48,13 +50,16 @@ class ForestServiceImplTest {
         List<Forest> list = List.of(
                 Forest.builder().build(),
                 Forest.builder().build(),
-                Forest.builder().build(),
-                Forest.builder().build(),
                 Forest.builder().build()
         );
 
         when(auth.getUsername()).thenReturn(username);
         when(forestRepository.findByUser_name(username)).thenReturn(list);
+        when(mapper.mapAll(anyList())).thenReturn(List.of(
+                new ForestResponse(),
+                new ForestResponse(),
+                new ForestResponse()
+        ));
 
         var actual = testing.getAll();
         assertEquals(list.size(), actual.size());
@@ -68,20 +73,23 @@ class ForestServiceImplTest {
         User user = new User();
         user.setName(username);
 
+        String name = "name";
+        ForestRequest dto = ForestRequest.builder()
+                .name(name)
+                .build();
+        ForestResponse response = new ForestResponse();
+        response.setName(name);
+
+        when(mapper.map(any(ForestRequest.class))).thenReturn(new Forest());
         when(userRepository.findByName(username)).thenReturn(Optional.of(user));
         when(forestRepository.save(any(Forest.class))).thenAnswer(i -> i.getArgument(0));
         when(auth.getUsername()).thenReturn(username);
-
-
-        String name = "name";
-        ForestDTO dto = ForestDTO.builder()
-                .name(name)
-                .build();
+        when(mapper.map(any(Forest.class))).thenReturn(response);
 
         var actual = testing.create(dto);
-        assertThat(actual.getCreatedAt()).isNotNull();
         assertEquals(name, actual.getName());
     }
+
     @Test
     @DisplayName("Получение леса по id")
     public void getForestById() {
@@ -98,6 +106,10 @@ class ForestServiceImplTest {
                 .user(user)
                 .build();
 
+        ForestResponse response = new ForestResponse();
+        response.setName(forestName);
+
+        when(mapper.map(any(Forest.class))).thenReturn(response);
         when(auth.getUsername()).thenReturn(username);
         when(forestRepository.findById(anyLong())).thenReturn(Optional.of(forest));
 
@@ -154,18 +166,21 @@ class ForestServiceImplTest {
                 .user(user)
                 .build();
 
-        when(forestRepository.findById(id)).thenReturn(Optional.of(forest));
-        when(forestRepository.save(any(Forest.class))).thenAnswer(i -> i.getArgument(0));
-        when(auth.getUsername()).thenReturn(username);
-
-
         String anotherName = "forest2";
-        ForestDTO changes = ForestDTO.builder()
+        ForestRequest changes = ForestRequest.builder()
                 .name(anotherName)
                 .build();
 
+        ForestResponse response = new ForestResponse();
+        response.setName(anotherName);
+
+        when(mapper.map(any(ForestRequest.class))).thenReturn(new Forest());
+        when(forestRepository.findById(id)).thenReturn(Optional.of(forest));
+        when(forestRepository.save(any(Forest.class))).thenAnswer(i -> i.getArgument(0));
+        when(auth.getUsername()).thenReturn(username);
+        when(mapper.map(any(Forest.class))).thenReturn(response);
+
         var actual = testing.change(id, changes);
-        assertThat(actual.getCreatedAt()).isNotNull();
         assertEquals(anotherName, actual.getName());
     }
 
@@ -176,7 +191,7 @@ class ForestServiceImplTest {
         when(forestRepository.findById(id)).thenReturn(Optional.empty());
 
         String anotherName = "forest2";
-        ForestDTO changes = ForestDTO.builder()
+        ForestRequest changes = ForestRequest.builder()
                 .name(anotherName)
                 .build();
 
@@ -202,9 +217,8 @@ class ForestServiceImplTest {
         when(forestRepository.findById(id)).thenReturn(Optional.of(forest));
         when(auth.getUsername()).thenReturn(anotherUsername);
 
-
         String anotherName = "forest2";
-        ForestDTO changes = ForestDTO.builder()
+        ForestRequest changes = ForestRequest.builder()
                 .name(anotherName)
                 .build();
 

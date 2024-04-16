@@ -1,9 +1,9 @@
 package hh.forest_of_habits.controller;
 
-import hh.forest_of_habits.dto.IncrementationDto;
-import hh.forest_of_habits.dto.TreeFullDto;
-import hh.forest_of_habits.dto.TreeNewDto;
-import hh.forest_of_habits.dto.TreeShortDto;
+import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,28 +17,28 @@ public class TreeController {
     private final TreeService treeService;
 
     @GetMapping("/by_forest/{id}")
-    public List<TreeShortDto> getAllByForestId(@PathVariable Long id) {
+    public List<TreeResponse> getAllByForestId(@PathVariable Long id) {
         return treeService.getAllByForestId(id);
     }
 
     @PostMapping
-    TreeShortDto create(@RequestBody TreeNewDto dto) {
-        return treeService.create(dto);
+    TreeResponse create(@RequestBody TreeRequest treeRequest) {
+        return treeService.create(treeRequest);
     }
 
     @PostMapping("/{id}")
-    TreeFullDto addIncrementation(@RequestBody IncrementationDto dto, @PathVariable Long id) {
-        return treeService.addIncrementation(dto, id);
+    TreeFullResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
+        return treeService.addIncrementation(incrementationRequest, id);
     }
 
     @GetMapping("/{id}")
-    TreeFullDto getById(@PathVariable Long id) {
+    TreeFullResponse getById(@PathVariable Long id) {
         return treeService.getById(id);
     }
 
     @PatchMapping("/{id}")
-    TreeShortDto update(@PathVariable Long id, @RequestBody TreeNewDto dto) {
-        return treeService.update(id, dto);
+    TreeResponse update(@PathVariable Long id, @RequestBody TreeRequest treeRequest) {
+        return treeService.update(id, treeRequest);
     }
 
     @DeleteMapping("/{id}")
