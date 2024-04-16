@@ -1,6 +1,5 @@
 package hh.forest_of_habits.mapper;
 
-import hh.forest_of_habits.dto.response.TreeBaseResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
 import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;

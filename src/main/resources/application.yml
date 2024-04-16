@@ -16,7 +16,6 @@ security:
         - /swagger-ui/**
         - /swagger-ui.html
 jwt:
-    header: Authorization
     lifetime: 30m
     secret: ew!s34df34543@zxcliu45$^sd&^%234455#$%^nmssd3
 springdoc:
