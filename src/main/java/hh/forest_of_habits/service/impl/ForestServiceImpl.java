@@ -50,7 +50,7 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public ForestResponse change(Long id, ForestRequest forestRequest) {
-        Forest forest = getForest(id);
+        getForest(id);
         Forest changedForest = mapper.map(forestRequest);
         changedForest.setId(id);
         return mapper.map(forestRepository.save(changedForest));
@@ -58,6 +58,7 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public void delete(Long id) {
+        getForest(id);
         forestRepository.deleteById(id);
     }
 
