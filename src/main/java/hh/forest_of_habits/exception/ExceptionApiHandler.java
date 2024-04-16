@@ -3,7 +3,7 @@ package hh.forest_of_habits.exception;
 import hh.forest_of_habits.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,7 +20,7 @@ public class ExceptionApiHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> badRequestException(BadRequestException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.builder()
                         .message(e.getMessage())
                         .build());
@@ -34,9 +34,17 @@ public class ExceptionApiHandler {
                         .build());
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> unauthorizedException(UnauthorizedException e) {
+    @ExceptionHandler({AuthenticationException.class, JwtTokenException.class})
+    public ResponseEntity<ErrorResponse> authenticationException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.builder()
+                        .message(e.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<ErrorResponse> internalServerException(InternalServerErrorException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.builder()
                         .message(e.getMessage())
                         .build());

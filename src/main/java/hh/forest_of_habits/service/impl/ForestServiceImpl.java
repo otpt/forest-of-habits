@@ -5,6 +5,7 @@ import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.ForestNotFoundException;
+import hh.forest_of_habits.exception.InternalServerErrorException;
 import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
@@ -12,6 +13,7 @@ import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +48,11 @@ public class ForestServiceImpl implements ForestService {
         Forest forest = mapper.map(forestRequest);
         forest.setUser(user);
 
-        return mapper.map(forestRepository.save(forest));
+        try {
+            return mapper.map(forestRepository.save(forest));
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override
@@ -54,13 +60,21 @@ public class ForestServiceImpl implements ForestService {
         getForest(id);
         Forest changedForest = mapper.map(forestRequest);
         changedForest.setId(id);
-        return mapper.map(forestRepository.save(changedForest));
+        try {
+            return mapper.map(forestRepository.save(changedForest));
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override
     public void delete(Long id) {
         getForest(id);
-        forestRepository.deleteById(id);
+        try {
+            forestRepository.deleteById(id);
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override

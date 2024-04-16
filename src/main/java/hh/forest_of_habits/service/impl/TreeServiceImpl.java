@@ -1,23 +1,23 @@
 package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
-import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
-import hh.forest_of_habits.exception.NotFoundException;
+import hh.forest_of_habits.exception.InternalServerErrorException;
 import hh.forest_of_habits.exception.TreeNotFoundException;
 import hh.forest_of_habits.mapper.IncrementationMapper;
 import hh.forest_of_habits.mapper.TreeMapper;
-import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,7 +53,11 @@ public class TreeServiceImpl implements TreeService {
         tree.setForest(forest);
         Tree savedTree = treeRepository.save(tree);
 
-        return mapToTreeResponse(savedTree);
+        try {
+            return mapToTreeResponse(savedTree);
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override
@@ -66,15 +70,22 @@ public class TreeServiceImpl implements TreeService {
         Optional.ofNullable(treeRequest.getPeriod()).ifPresent(tree::setPeriod);
         Optional.ofNullable(treeRequest.getName()).ifPresent(tree::setName);
 
-        Tree savedTree = treeRepository.save(tree);
-
-        return mapToTreeResponse(savedTree);
+        try {
+            Tree savedTree = treeRepository.save(tree);
+            return mapToTreeResponse(savedTree);
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override
     public void delete(Long id) {
         Tree tree = getTree(id);
-        treeRepository.delete(tree);
+        try {
+            treeRepository.delete(tree);
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
     }
 
     @Override
@@ -82,7 +93,11 @@ public class TreeServiceImpl implements TreeService {
         getTree(treeId);
         Incrementation incrementation = incrementationMapper.map(incrementationRequest);
         incrementation.setTreeId(treeId);
-        incrementationRepository.save(incrementation);
+        try {
+            incrementationRepository.save(incrementation);
+        } catch (DataAccessException e) {
+            throw new InternalServerErrorException();
+        }
         return getById(treeId);
     }
 

@@ -24,6 +24,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByName(name);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByName(username).orElseThrow(() -> new UsernameNotFoundException(
@@ -38,7 +42,6 @@ public class UserService implements UserDetailsService {
     }
 
     public void createNewUser(RegistrationRequest registrationRequest) {
-
         User user = new User();
         user.setName(registrationRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
