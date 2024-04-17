@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = TreeMapper.class)
 public abstract class ForestMapper {
     public abstract List<ForestResponse> mapAll(List<Forest> s);
     public abstract ForestResponse map(Forest s);
