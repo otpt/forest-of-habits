@@ -1,8 +1,11 @@
 package hh.forest_of_habits;
 
 import hh.forest_of_habits.dto.request.RegistrationRequest;
+import hh.forest_of_habits.dto.response.UserInfoResponse;
 import hh.forest_of_habits.entity.User;
+import hh.forest_of_habits.mapper.UserMapper;
 import hh.forest_of_habits.repository.UserRepository;
+import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -28,6 +32,10 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    UserMapper mapper;
+    @Mock
+    AuthFacade auth;
     @InjectMocks
     private UserService userService;
 
@@ -115,5 +123,25 @@ public class UserServiceTest {
         Mockito.verify(userRepository).save(argument.capture());
         assertEquals(username, argument.getValue().getName());
         assertEquals(encoded, argument.getValue().getPassword());
+    }
+
+    @Test
+    void getUserInfo() {
+        String username = "username";
+
+        User user = new User();
+        user.setName(username);
+
+        UserInfoResponse response = UserInfoResponse.builder()
+                .username(username)
+                .build();
+
+        when(auth.getUsername()).thenReturn(username);
+        when(userRepository.findByName(username)).thenReturn(Optional.of(user));
+        when(mapper.map(any(User.class))).thenReturn(response);
+
+        var actual = userService.getUserInfo();
+
+        assertEquals(username, actual.getUsername());
     }
 }

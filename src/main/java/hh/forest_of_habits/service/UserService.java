@@ -1,7 +1,10 @@
 package hh.forest_of_habits.service;
 
+import hh.forest_of_habits.dto.response.UserInfoResponse;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
 import hh.forest_of_habits.entity.User;
+import hh.forest_of_habits.exception.UserNotFoundException;
+import hh.forest_of_habits.mapper.UserMapper;
 import hh.forest_of_habits.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +24,8 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper mapper;
+    private final AuthFacade auth;
 
     public Optional<User> findByName(String name) {
         return userRepository.findByName(name);
@@ -51,5 +56,12 @@ public class UserService implements UserDetailsService {
                 .agreementConfirmation(request.getAgreementConfirmation())
                 .build();
         userRepository.save(user);
+    }
+
+    public UserInfoResponse getUserInfo() {
+        String username = auth.getUsername();
+        User user = findByName(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+        return mapper.map(user);
     }
 }
