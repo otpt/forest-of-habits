@@ -1,14 +1,16 @@
 package hh.forest_of_habits.exception;
 
 import hh.forest_of_habits.dto.response.ErrorResponse;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ExceptionApiHandler {
+
+    static private final String INTERNAL = "Ошибка сервера";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFoundException(NotFoundException e) {
@@ -42,11 +44,11 @@ public class ExceptionApiHandler {
                         .build());
     }
 
-    @ExceptionHandler(InternalServerErrorException.class)
-    public ResponseEntity<ErrorResponse> internalServerException(InternalServerErrorException e) {
+    @ExceptionHandler({InternalServerErrorException.class, DataAccessException.class})
+    public ResponseEntity<ErrorResponse> internalServerException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.builder()
-                        .message(e.getMessage())
+                        .message(INTERNAL)
                         .build());
     }
 }

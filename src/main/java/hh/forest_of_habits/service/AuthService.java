@@ -1,15 +1,13 @@
 package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.AuthRequest;
-import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
+import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.exception.AuthenticationException;
 import hh.forest_of_habits.exception.EmailAlreadyExistsException;
-import hh.forest_of_habits.exception.InternalServerErrorException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,11 +51,7 @@ public class AuthService {
         if (userService.findByEmail(email).isPresent())
             throw new EmailAlreadyExistsException(email);
 
-        try {
-            userService.createNewUser(registrationRequest);
-        } catch (DataAccessException exception) {
-            throw new InternalServerErrorException();
-        }
+        userService.createNewUser(registrationRequest);
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                 username,
