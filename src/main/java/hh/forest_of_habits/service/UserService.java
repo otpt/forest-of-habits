@@ -6,6 +6,7 @@ import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.UserMapper;
 import hh.forest_of_habits.repository.UserRepository;
+import hh.forest_of_habits.utils.AuthFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +26,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
-    private final AuthFacade auth;
 
     public Optional<User> findByName(String name) {
         return userRepository.findByName(name);
@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserInfoResponse getUserInfo() {
-        String username = auth.getUsername();
+        String username = AuthFacade.getUsername();
         User user = findByName(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         return mapper.map(user);

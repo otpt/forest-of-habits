@@ -12,9 +12,9 @@ import hh.forest_of_habits.mapper.IncrementationMapper;
 import hh.forest_of_habits.mapper.TreeMapper;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
-import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
 import hh.forest_of_habits.service.TreeService;
+import hh.forest_of_habits.utils.OwnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,6 @@ public class TreeServiceImpl implements TreeService {
     private final ForestService forestService;
     private final TreeRepository treeRepository;
     private final IncrementationRepository incrementationRepository;
-    private final AuthFacade auth;
     private final TreeMapper treeMapper;
     private final IncrementationMapper incrementationMapper;
 
@@ -84,7 +83,7 @@ public class TreeServiceImpl implements TreeService {
     private Tree getTree(Long treeId) {
         Tree tree = treeRepository.findById(treeId)
                 .orElseThrow(() -> new TreeNotFoundException(treeId));
-        auth.checkOwn(tree);
+        OwnUtils.checkOwn(tree);
         return tree;
     }
 }

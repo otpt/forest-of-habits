@@ -1,12 +1,10 @@
-package hh.forest_of_habits;
+package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.RegistrationRequest;
 import hh.forest_of_habits.dto.response.UserInfoResponse;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.mapper.UserMapper;
 import hh.forest_of_habits.repository.UserRepository;
-import hh.forest_of_habits.service.AuthFacade;
-import hh.forest_of_habits.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -34,8 +37,6 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     UserMapper mapper;
-    @Mock
-    AuthFacade auth;
     @InjectMocks
     private UserService userService;
 
@@ -137,7 +138,11 @@ public class UserServiceTest {
                 .username(username)
                 .build();
 
-        when(auth.getUsername()).thenReturn(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, "");
+        SecurityContext context = new SecurityContextImpl();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+
         when(userRepository.findByName(username)).thenReturn(Optional.of(user));
         when(mapper.map(any(User.class))).thenReturn(response);
 
