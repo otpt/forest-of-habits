@@ -1,13 +1,15 @@
 package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.AuthRequest;
-import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
-import hh.forest_of_habits.exception.BadCredentialsException;
+import hh.forest_of_habits.dto.response.AuthResponse;
+import hh.forest_of_habits.exception.AuthenticationException;
+import hh.forest_of_habits.exception.EmailAlreadyExistsException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +34,8 @@ public class AuthService {
                             authRequest.getUsername(),
                             authRequest.getPassword()
                     ));
-        } catch (Exception exception) {
-            throw new BadCredentialsException();
+        } catch (BadCredentialsException exception) {
+            throw new AuthenticationException();
         }
         return authResponse((UserDetails) authentication.getPrincipal());
     }
@@ -41,9 +43,13 @@ public class AuthService {
     public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {
         String username = registrationRequest.getUsername();
         String password = registrationRequest.getPassword();
+        String email = registrationRequest.getEmail();
 
         if (userService.findByName(username).isPresent())
             throw new UserAlreadyExistsException(username);
+
+        if (userService.findByEmail(email).isPresent())
+            throw new EmailAlreadyExistsException(email);
 
         userService.createNewUser(registrationRequest);
 

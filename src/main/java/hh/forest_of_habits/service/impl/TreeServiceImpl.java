@@ -1,17 +1,15 @@
 package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
-import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
-import hh.forest_of_habits.exception.NotFoundException;
 import hh.forest_of_habits.exception.TreeNotFoundException;
 import hh.forest_of_habits.mapper.IncrementationMapper;
 import hh.forest_of_habits.mapper.TreeMapper;
-import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.service.AuthFacade;
@@ -52,7 +50,6 @@ public class TreeServiceImpl implements TreeService {
         Tree tree = treeMapper.map(treeRequest);
         tree.setForest(forest);
         Tree savedTree = treeRepository.save(tree);
-
         return mapToTreeResponse(savedTree);
     }
 
@@ -67,7 +64,6 @@ public class TreeServiceImpl implements TreeService {
         Optional.ofNullable(treeRequest.getName()).ifPresent(tree::setName);
 
         Tree savedTree = treeRepository.save(tree);
-
         return mapToTreeResponse(savedTree);
     }
 
