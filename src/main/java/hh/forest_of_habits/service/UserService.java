@@ -17,6 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
+    private static final String USER_NOT_FOUND = "User '%s' not found";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -31,7 +33,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByName(username).orElseThrow(() -> new UsernameNotFoundException(
-                String.format("User '%s' not found", username)
+                USER_NOT_FOUND.formatted(username)
         ));
 
         return new org.springframework.security.core.userdetails.User(
@@ -41,12 +43,13 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void createNewUser(RegistrationRequest registrationRequest) {
-        User user = new User();
-        user.setName(registrationRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        user.setEmail(registrationRequest.getEmail());
-        user.setAgreementConfirmation(registrationRequest.getAgreementConfirmation());
+    public void createNewUser(RegistrationRequest request) {
+        User user = User.builder()
+                .name(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .agreementConfirmation(request.getAgreementConfirmation())
+                .build();
         userRepository.save(user);
     }
 }
