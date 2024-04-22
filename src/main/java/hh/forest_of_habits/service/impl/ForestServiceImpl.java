@@ -14,6 +14,7 @@ import hh.forest_of_habits.service.ForestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class ForestServiceImpl implements ForestService {
 
         Forest forest = mapper.map(forestRequest);
         forest.setUser(user);
-
+        forest.setCreatedAt(LocalDateTime.now());
         return mapper.map(forestRepository.save(forest));
     }
 
