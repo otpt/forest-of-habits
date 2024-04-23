@@ -41,8 +41,7 @@ public class TreeServiceImpl implements TreeService {
     @Override
     public TreeFullResponse getById(Long id) {
         Tree tree = getTree(id);
-
-        return mapToTreeFullResponse(tree);
+        return treeMapper.mapToFull(tree);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class TreeServiceImpl implements TreeService {
         tree.setForest(forest);
         tree.setIncrementations(new ArrayList<>());
         Tree savedTree = treeRepository.save(tree);
-        return mapToTreeResponse(savedTree);
+        return treeMapper.mapToShort(savedTree);
     }
 
     @Override
@@ -66,7 +65,7 @@ public class TreeServiceImpl implements TreeService {
         Optional.ofNullable(treeRequest.getName()).ifPresent(tree::setName);
 
         Tree savedTree = treeRepository.save(tree);
-        return mapToTreeResponse(savedTree);
+        return treeMapper.mapToShort(savedTree);
     }
 
     @Override
@@ -89,20 +88,5 @@ public class TreeServiceImpl implements TreeService {
                 .orElseThrow(() -> new TreeNotFoundException(treeId));
         auth.checkOwn(tree);
         return tree;
-    }
-
-    private TreeResponse mapToTreeResponse(Tree tree) {
-        TreeResponse response = treeMapper.mapToShort(tree);
-        response.setCounter(tree.getIncrementations()
-                .stream()
-                .mapToInt(Incrementation::getValue)
-                .sum());
-        return response;
-    }
-
-    private TreeFullResponse mapToTreeFullResponse(Tree tree) {
-        TreeFullResponse response = treeMapper.mapToFull(tree);
-        response.setIncrements(incrementationMapper.mapAll(tree.getIncrementations()));
-        return response;
     }
 }
