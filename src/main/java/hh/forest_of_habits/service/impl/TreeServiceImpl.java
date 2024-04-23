@@ -18,6 +18,7 @@ import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,7 @@ public class TreeServiceImpl implements TreeService {
         Forest forest = forestService.getForest(treeRequest.getForestId());
         Tree tree = treeMapper.map(treeRequest);
         tree.setForest(forest);
+        tree.setIncrementations(new ArrayList<>());
         Tree savedTree = treeRepository.save(tree);
         return mapToTreeResponse(savedTree);
     }
