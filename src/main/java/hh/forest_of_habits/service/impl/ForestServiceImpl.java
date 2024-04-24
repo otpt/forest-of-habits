@@ -7,7 +7,9 @@ import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.ForestNotFoundException;
 import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
+import hh.forest_of_habits.mapper.TreeMapper;
 import hh.forest_of_habits.repository.ForestRepository;
+import hh.forest_of_habits.repository.TreeViewRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
@@ -24,11 +26,20 @@ public class ForestServiceImpl implements ForestService {
     final UserRepository userRepository;
     final AuthFacade auth;
     final ForestMapper mapper;
+    final TreeMapper treeMapper;
+    final TreeViewRepository treeViewRepository;
+
+    private static final int TREE_LIST_COUNT = 3;
 
     @Override
     public List<ForestResponse> getAll() {
         String username = auth.getUsername();
-        return mapper.mapAll(forestRepository.findByUser_name(username));
+        List<ForestResponse> forestList = mapper.mapAll(forestRepository.findByUser_name(username));
+        forestList.forEach(forestResponse ->
+                forestResponse.setTrees(treeViewRepository
+                        .findAllTreeByForest_id(forestResponse.getId())
+                        .stream().limit(TREE_LIST_COUNT).toList()));
+        return forestList;
     }
 
     @Override
