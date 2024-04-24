@@ -126,6 +126,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Получение информации о пользователе")
     void getUserInfo() {
         String username = "username";
 
