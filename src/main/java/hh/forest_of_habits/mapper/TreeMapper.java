@@ -6,12 +6,13 @@ import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = IncrementationMapper.class)
 public abstract class TreeMapper {
 
     @Named(value = "used")
@@ -23,6 +24,7 @@ public abstract class TreeMapper {
 
     abstract Tree mapToTree(TreeRequest s);
 
+    @Mapping(target = "increments", source = "incrementations")
     public abstract TreeFullResponse mapToFull(Tree s);
 
     @Named(value = "used")
