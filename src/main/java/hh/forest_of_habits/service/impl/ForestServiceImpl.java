@@ -46,7 +46,6 @@ public class ForestServiceImpl implements ForestService {
 
         Forest forest = mapper.map(forestRequest);
         forest.setUser(user);
-        forest.setCreatedAt(LocalDateTime.now());
         return mapper.map(forestRepository.save(forest));
     }
 

@@ -17,7 +17,6 @@ public class TreeRequest {
     private String description;
     private TreeType type;
     private TreePeriod period;
-    private LocalDateTime createdAt;
     private Integer limit;
     @JsonProperty("forest_id")
     private Long forestId;

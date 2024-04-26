@@ -55,7 +55,6 @@ public class TreeServiceImpl implements TreeService {
     public TreeResponse update(Long id, TreeRequest treeRequest) {
         Tree tree = getTree(id);
 
-        Optional.ofNullable(treeRequest.getCreatedAt()).ifPresent(tree::setCreatedAt);
         Optional.ofNullable(treeRequest.getDescription()).ifPresent(tree::setDescription);
         Optional.ofNullable(treeRequest.getLimit()).ifPresent(tree::setLimit);
         Optional.ofNullable(treeRequest.getPeriod()).ifPresent(tree::setPeriod);
