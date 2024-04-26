@@ -9,8 +9,9 @@ import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.UserRepository;
-import hh.forest_of_habits.service.AuthFacade;
 import hh.forest_of_habits.service.ForestService;
+import hh.forest_of_habits.utils.AuthFacade;
+import hh.forest_of_habits.utils.OwnUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,11 @@ import java.util.List;
 public class ForestServiceImpl implements ForestService {
     final ForestRepository forestRepository;
     final UserRepository userRepository;
-    final AuthFacade auth;
     final ForestMapper mapper;
 
     @Override
     public List<ForestResponse> getAll() {
-        String username = auth.getUsername();
+        String username = AuthFacade.getUsername();
         return mapper.mapAll(forestRepository.findByUser_name(username));
     }
 
@@ -39,7 +39,7 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public ForestResponse create(ForestRequest forestRequest) {
-        String username = auth.getUsername();
+        String username = AuthFacade.getUsername();
         //TODO Можно взять из токена если его туда положить
         User user = userRepository.findByName(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
@@ -68,7 +68,7 @@ public class ForestServiceImpl implements ForestService {
     public Forest getForest(Long id) {
         Forest forest = forestRepository.findById(id)
                 .orElseThrow(() -> new ForestNotFoundException(id));
-        auth.checkOwn(forest);
+        OwnUtils.checkOwn(forest);
         return forest;
     }
 }

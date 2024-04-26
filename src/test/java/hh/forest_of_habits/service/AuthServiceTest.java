@@ -1,4 +1,4 @@
-package hh.forest_of_habits;
+package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.AuthRequest;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
@@ -7,8 +7,6 @@ import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.AuthenticationException;
 import hh.forest_of_habits.exception.EmailAlreadyExistsException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
-import hh.forest_of_habits.service.AuthService;
-import hh.forest_of_habits.service.UserService;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
