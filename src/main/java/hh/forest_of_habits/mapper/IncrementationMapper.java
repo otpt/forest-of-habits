@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class IncrementationMapper {
     public abstract IncrementationResponse map(Incrementation s);
-
     public abstract Incrementation map(IncrementationRequest s);
-
     public abstract List<IncrementationResponse> mapAll(List<Incrementation> s);
 }

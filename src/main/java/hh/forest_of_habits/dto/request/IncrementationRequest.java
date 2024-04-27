@@ -9,6 +9,5 @@ import java.time.LocalDateTime;
 @Data
 public class IncrementationRequest {
     private Long id;
-    private LocalDateTime date;
     private Integer value;
 }
