@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,7 +44,7 @@ public class Tree {
 
     @OneToMany
     @JoinColumn(name = "tree_id")
-    private List<Incrementation> incrementations;
+    private List<Incrementation> increments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "forest_id")

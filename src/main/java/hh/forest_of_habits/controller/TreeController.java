@@ -27,7 +27,7 @@ public class TreeController {
     }
 
     @PostMapping("/{id}")
-    TreeFullResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
+    TreeResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
         return treeService.addIncrementation(incrementationRequest, id);
     }
 

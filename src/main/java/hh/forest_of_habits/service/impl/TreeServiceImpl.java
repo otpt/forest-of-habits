@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -38,8 +37,7 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeFullResponse getById(Long id) {
-        Tree tree = getTree(id);
-        return treeMapper.mapToFull(tree);
+        return treeMapper.mapToFull(getTree(id));
     }
 
     @Override
@@ -55,11 +53,7 @@ public class TreeServiceImpl implements TreeService {
     public TreeResponse update(Long id, TreeRequest treeRequest) {
         Tree tree = getTree(id);
 
-        Optional.ofNullable(treeRequest.getDescription()).ifPresent(tree::setDescription);
-        Optional.ofNullable(treeRequest.getLimit()).ifPresent(tree::setLimit);
-        Optional.ofNullable(treeRequest.getPeriod()).ifPresent(tree::setPeriod);
-        Optional.ofNullable(treeRequest.getName()).ifPresent(tree::setName);
-
+        treeMapper.update(tree, treeRequest);
         Tree savedTree = treeRepository.save(tree);
         return treeMapper.mapToShort(savedTree);
     }
@@ -71,12 +65,12 @@ public class TreeServiceImpl implements TreeService {
     }
 
     @Override
-    public TreeFullResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId) {
-        getTree(treeId);
+    public TreeResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId) {
+        Tree tree = getTree(treeId);
         Incrementation incrementation = incrementationMapper.map(incrementationRequest);
         incrementation.setTreeId(treeId);
         incrementationRepository.save(incrementation);
-        return getById(treeId);
+        return treeMapper.mapToShort(tree);
     }
 
     private Tree getTree(Long treeId) {
