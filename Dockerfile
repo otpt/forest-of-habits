@@ -5,8 +5,10 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
+COPY .git .git
 
 RUN ./mvnw install -DskipTests
+RUN ./mvnw org.springframework.boot:spring-boot-maven-plugin:build-info
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM eclipse-temurin:17

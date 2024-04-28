@@ -15,6 +15,18 @@ security:
         - /v3/api-docs/**
         - /swagger-ui/**
         - /swagger-ui.html
+        - /actuator/**
+management:
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+    info:
+        java:
+            enabled: true
 jwt:
     lifetime: 30m
     secret: ew!s34df34543@zxcliu45$^sd&^%234455#$%^nmssd3
