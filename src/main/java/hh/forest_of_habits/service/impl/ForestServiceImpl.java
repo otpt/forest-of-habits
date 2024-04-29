@@ -12,10 +12,10 @@ import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.ForestService;
 import hh.forest_of_habits.utils.AuthFacade;
 import hh.forest_of_habits.utils.OwnUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -49,18 +49,17 @@ public class ForestServiceImpl implements ForestService {
         return mapper.map(forestRepository.save(forest));
     }
 
+    @Transactional
     @Override
     public ForestResponse change(Long id, ForestRequest forestRequest) {
-        getForest(id);
-        Forest changedForest = mapper.map(forestRequest);
-        changedForest.setId(id);
-        return mapper.map(forestRepository.save(changedForest));
+        Forest forest = getForest(id);
+        mapper.update(forest, forestRequest);
+        return mapper.map(forest);
     }
 
     @Override
     public void delete(Long id) {
-        getForest(id);
-        forestRepository.deleteById(id);
+        forestRepository.delete(getForest(id));
     }
 
     @Override

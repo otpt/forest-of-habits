@@ -18,5 +18,5 @@ public interface TreeService {
 
     void delete(Long id);
 
-    TreeFullResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId);
+    TreeResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId);
 }

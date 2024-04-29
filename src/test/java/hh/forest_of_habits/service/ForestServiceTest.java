@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,9 +29,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -166,6 +165,7 @@ class ForestServiceTest {
         user.setName(username);
 
         Forest forest = Forest.builder()
+                .id(id)
                 .name(name)
                 .user(user)
                 .build();
@@ -175,15 +175,19 @@ class ForestServiceTest {
                 .name(anotherName)
                 .build();
 
-        ForestResponse response = new ForestResponse();
-        response.setName(anotherName);
+        var response = ForestResponse.builder()
+                .id(id)
+                .name(anotherName)
+                .build();
 
-        when(mapper.map(any(ForestRequest.class))).thenReturn(new Forest());
         when(forestRepository.findById(id)).thenReturn(Optional.of(forest));
-        when(forestRepository.save(any(Forest.class))).thenAnswer(i -> i.getArgument(0));
         when(mapper.map(any(Forest.class))).thenReturn(response);
 
         var actual = testing.change(id, changes);
+
+        Mockito.verify(mapper, Mockito.times(1))
+                .update(any(Forest.class), any(ForestRequest.class));
+        assertEquals(actual.getId(), forest.getId());
         assertEquals(anotherName, actual.getName());
     }
 

@@ -6,42 +6,35 @@ import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = IncrementationMapper.class)
+@Mapper(componentModel = "spring", uses = IncrementationMapper.class,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class TreeMapper {
-
-    @Named(value = "used")
-    public Tree map(TreeRequest s) {
-        Tree tree = mapToTree(s);
-        tree.setIncrementations(new ArrayList<>());
+    public Tree map(TreeRequest request) {
+        Tree tree = new Tree();
+        update(tree, request);
         return tree;
     }
 
-    abstract Tree mapToTree(TreeRequest s);
+    public abstract void update(@MappingTarget Tree tree, TreeRequest request);
 
-    @Mapping(target = "increments", source = "incrementations")
     public abstract TreeFullResponse mapToFull(Tree s);
 
-    @Named(value = "used")
-    public TreeResponse mapToShort(Tree s) {
-        TreeResponse response = mapToBase(s);
-        response.setCounter(s.getIncrementations()
+    protected abstract void setFromTree(@MappingTarget TreeResponse response, Tree tree);
+
+    public TreeResponse mapToShort(Tree tree) {
+        TreeResponse response = new TreeResponse();
+        setFromTree(response, tree);
+        response.setCounter(tree.getIncrements()
                 .stream()
                 .mapToInt(Incrementation::getValue)
                 .sum());
         return response;
     }
 
-    abstract TreeResponse mapToBase(Tree s);
-
-    public List<TreeResponse> mapAll(List<Tree> s) {
-        if (s == null) return null;
-        if (s.isEmpty()) return List.of();
-        return s.stream().map(this::mapToShort).toList();
-    }
+    public abstract List<TreeResponse> mapAll(List<Tree> s);
 }
