@@ -1,6 +1,7 @@
 package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
 import hh.forest_of_habits.dto.response.TreeResponse;
@@ -18,5 +19,5 @@ public interface TreeService {
 
     void delete(Long id);
 
-    TreeResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId);
+    TreeIncrementsResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId);
 }
