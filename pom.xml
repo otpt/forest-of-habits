@@ -10,7 +10,7 @@
     </parent>
     <groupId>hh</groupId>
     <artifactId>forest_of_habits</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>forest_of_habits</name>
     <description>forest_of_habits</description>
     <properties>
