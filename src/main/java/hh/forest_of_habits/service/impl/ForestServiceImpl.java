@@ -2,12 +2,14 @@ package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.request.ForestRequest;
 import hh.forest_of_habits.dto.response.ForestResponse;
+import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.ForestNotFoundException;
 import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
+import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.ForestService;
 import hh.forest_of_habits.utils.AuthFacade;
@@ -16,19 +18,30 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class ForestServiceImpl implements ForestService {
+
+    private final Integer TREE_LIST_LIMIT = 3;
+
     final ForestRepository forestRepository;
     final UserRepository userRepository;
     final ForestMapper mapper;
+    final TreeRepository treeRepository;
+
 
     @Override
     public List<ForestResponse> getAll() {
         String username = AuthFacade.getUsername();
-        return mapper.mapAll(forestRepository.findByUser_name(username));
+        List<ForestResponse> responseList = mapper.mapAll(forestRepository.findByUser_name(username));
+        responseList.forEach(forestResponse ->
+                forestResponse.setTrees(sort(
+                        treeRepository.findTreesWithIncrementsCounter(forestResponse.getId()))
+                        .stream().limit(TREE_LIST_LIMIT).toList()));
+        return responseList;
     }
 
     @Override
@@ -68,5 +81,19 @@ public class ForestServiceImpl implements ForestService {
                 .orElseThrow(() -> new ForestNotFoundException(id));
         OwnUtils.checkOwn(forest);
         return forest;
+    }
+
+    private List<TreeResponse> sort(List<TreeResponse> trees) {
+        List<TreeResponse> result = new ArrayList<>();
+        trees.forEach(tree -> {
+            boolean shouldAddFirst = false;
+            switch (tree.getType()) {
+                case BOOLEAN_TREE, PERIODIC_TREE -> shouldAddFirst = tree.getCounter() == 0;
+                case UNLIMITED_TREE -> shouldAddFirst = true;
+                case LIMITED_TREE -> shouldAddFirst = tree.getCounter() < tree.getLimit();
+            }
+            result.add(shouldAddFirst ? 0 : result.size(), tree);
+        });
+        return result;
     }
 }
