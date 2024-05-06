@@ -1,8 +1,9 @@
 package hh.forest_of_habits.controller;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
-import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class TreeController {
     }
 
     @PostMapping("/{id}")
-    TreeResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
+    TreeIncrementsResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
         return treeService.addIncrementation(incrementationRequest, id);
     }
 

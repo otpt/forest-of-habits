@@ -3,6 +3,7 @@ package hh.forest_of_habits.service.impl;
 import hh.forest_of_habits.dto.request.IncrementationRequest;
 import hh.forest_of_habits.dto.request.TreeRequest;
 import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.Incrementation;
@@ -65,12 +66,13 @@ public class TreeServiceImpl implements TreeService {
     }
 
     @Override
-    public TreeResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId) {
+    public TreeIncrementsResponse addIncrementation(IncrementationRequest incrementationRequest, Long treeId) {
         Tree tree = getTree(treeId);
-        Incrementation incrementation = incrementationMapper.map(incrementationRequest);
+        Incrementation incrementation = new Incrementation();
+        incrementationMapper.update(incrementation, incrementationRequest);
         incrementation.setTreeId(treeId);
         incrementationRepository.save(incrementation);
-        return treeMapper.mapToShort(tree);
+        return treeMapper.mapToIncrements(tree);
     }
 
     private Tree getTree(Long treeId) {
