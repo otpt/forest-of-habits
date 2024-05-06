@@ -8,6 +8,7 @@ import hh.forest_of_habits.exception.ForbiddenException;
 import hh.forest_of_habits.exception.NotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
+import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.service.impl.ForestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,8 @@ class ForestServiceTest {
     ForestRepository forestRepository;
     @Mock
     UserRepository userRepository;
+    @Mock
+    TreeRepository treeRepository;
     @Mock
     ForestMapper mapper;
     @InjectMocks

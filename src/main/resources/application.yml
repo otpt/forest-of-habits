@@ -36,3 +36,6 @@ springdoc:
 logging:
     level:
         liquibase: INFO
+info:
+    app:
+        version: '@project.version@'
