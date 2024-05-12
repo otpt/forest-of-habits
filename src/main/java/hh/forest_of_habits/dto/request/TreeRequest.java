@@ -6,12 +6,14 @@ import hh.forest_of_habits.enums.TreeType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class TreeRequest {
     @NotBlank(message = "Название дерева не может быть пустым")
     private String name;
