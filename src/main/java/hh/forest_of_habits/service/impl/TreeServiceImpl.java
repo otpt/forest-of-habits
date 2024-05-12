@@ -2,6 +2,7 @@ package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
 import hh.forest_of_habits.dto.request.TreeRequest;
+import hh.forest_of_habits.dto.request.TreeStatus;
 import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
@@ -31,9 +32,13 @@ public class TreeServiceImpl implements TreeService {
     private final IncrementationMapper incrementationMapper;
 
     @Override
-    public List<TreeResponse> getAllByForestId(Long forestId) {
-        Forest forest = forestService.getForest(forestId);
-        return treeMapper.mapAll(forest.getTrees());
+    public List<TreeResponse> getAllByForestId(Long forestId, TreeStatus status) {
+        List<TreeResponse> allTrees = treeRepository.findTreesWithIncrementsCounter(forestId);
+        return switch (status) {
+            case ALL -> allTrees;
+            case OPEN -> getOpenTrees(allTrees);
+            case CLOSE -> getCloseTrees(allTrees);
+        };
     }
 
     @Override
@@ -80,5 +85,25 @@ public class TreeServiceImpl implements TreeService {
                 .orElseThrow(() -> new TreeNotFoundException(treeId));
         OwnUtils.checkOwn(tree);
         return tree;
+    }
+
+    List<TreeResponse> getOpenTrees(List<TreeResponse> trees) {
+        return trees.stream()
+                .filter(tree -> switch (tree.getType()) {
+                            case BOOLEAN_TREE, PERIODIC_TREE -> tree.getCounter() == 0;
+                            case UNLIMITED_TREE -> true;
+                            case LIMITED_TREE -> tree.getCounter() < tree.getLimit();
+                        })
+                .toList();
+    }
+
+    List<TreeResponse> getCloseTrees(List<TreeResponse> trees) {
+        return trees.stream()
+                .filter(tree -> switch (tree.getType()) {
+                    case BOOLEAN_TREE -> tree.getCounter() > 0;
+                    case UNLIMITED_TREE, PERIODIC_TREE -> false;
+                    case LIMITED_TREE -> tree.getCounter() >= tree.getLimit();
+                })
+                .toList();
     }
 }
