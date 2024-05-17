@@ -1,6 +1,7 @@
 package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.IncrementationRequest;
+import hh.forest_of_habits.dto.request.TreeStatus;
 import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeFullResponse;
 import hh.forest_of_habits.dto.request.TreeRequest;
@@ -12,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 @Validated
 public interface TreeService {
-    List<TreeResponse> getAllByForestId(Long forestId);
+    List<TreeResponse> getAllByForestId(Long forestId, TreeStatus status);
 
     TreeFullResponse getById(@Positive(message = "id не может быть меньше 1") Long id);
 
