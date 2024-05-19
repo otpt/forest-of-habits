@@ -62,6 +62,8 @@ public class AuthServiceTest {
 
         Mockito.when(auth.getPrincipal()).thenReturn(userDetails);
         Mockito.when(authenticationManager.authenticate(any())).thenReturn(auth);
+        Mockito.when(userService.findByName(username))
+                .thenReturn(Optional.ofNullable(User.builder().name(username).password("").email("").build()));
 
         assertEquals(username, authService.login(authRequest).getUserName());
     }
@@ -101,7 +103,7 @@ public class AuthServiceTest {
                 .build();
 
         Mockito.when(tokenUtils.generateToken(any())).thenReturn(mockToken);
-
+        Mockito.when(userService.findByName(any())).thenReturn(Optional.empty(), Optional.of(new User()));
         AuthResponse authResponse = authService.registration(registrationRequest);
 
         ArgumentCaptor<RegistrationRequest> argument = ArgumentCaptor.forClass(RegistrationRequest.class);
