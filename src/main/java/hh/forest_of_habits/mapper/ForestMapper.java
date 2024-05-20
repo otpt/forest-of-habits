@@ -11,7 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class ForestMapper {
     public abstract List<ForestResponse> mapAll(List<Forest> s);
+
     public abstract ForestResponse map(Forest s);
+
     public abstract Forest map(ForestRequest s);
+
     public abstract void update(@MappingTarget Forest forest, ForestRequest request);
 }

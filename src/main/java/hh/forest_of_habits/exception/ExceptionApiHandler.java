@@ -12,7 +12,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 @RestControllerAdvice
 public class ExceptionApiHandler {
 
-    static private final String INTERNAL = "Ошибка сервера";
+    private static final String INTERNAL = "Ошибка сервера";
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFoundException(NotFoundException e) {
