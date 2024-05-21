@@ -45,7 +45,6 @@ public class AuthService {
 
     public AuthResponse registration(@Valid @RequestBody RegistrationRequest registrationRequest) {
         String username = registrationRequest.getUsername();
-        String password = registrationRequest.getPassword();
         String email = registrationRequest.getEmail();
 
         if (userService.findByName(username).isPresent())
@@ -58,7 +57,7 @@ public class AuthService {
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                 username,
-                password,
+                "",
                 List.of()
         );
         return authResponse(userDetails);

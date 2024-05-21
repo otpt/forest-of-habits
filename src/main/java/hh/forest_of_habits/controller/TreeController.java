@@ -8,7 +8,15 @@ import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.service.TreeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,7 +28,8 @@ public class TreeController {
 
     @GetMapping("/by_forest/{id}")
     public List<TreeResponse> getAllByForestId(@PathVariable Long id,
-                                               @RequestParam(required = false, defaultValue = "ALL") TreeStatus status) {
+                                               @RequestParam(required = false, defaultValue = "ALL")
+                                               TreeStatus status) {
         return treeService.getAllByForestId(id, status);
     }
 
@@ -30,7 +39,8 @@ public class TreeController {
     }
 
     @PostMapping("/{id}")
-    TreeIncrementsResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest, @PathVariable Long id) {
+    TreeIncrementsResponse addIncrementation(@RequestBody IncrementationRequest incrementationRequest,
+                                             @PathVariable Long id) {
         return treeService.addIncrementation(incrementationRequest, id);
     }
 

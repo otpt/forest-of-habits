@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class ForestServiceImpl implements ForestService {
 
-    private final Integer TREE_LIST_LIMIT = 3;
+    private static final Integer TREE_LIST_LIMIT = 3;
 
     final ForestRepository forestRepository;
     final UserRepository userRepository;
@@ -91,6 +91,7 @@ public class ForestServiceImpl implements ForestService {
                 case BOOLEAN_TREE, PERIODIC_TREE -> shouldAddFirst = tree.getCounter() == 0;
                 case UNLIMITED_TREE -> shouldAddFirst = true;
                 case LIMITED_TREE -> shouldAddFirst = tree.getCounter() < tree.getLimit();
+                default -> throw new IllegalArgumentException("Неизвестный тип дерева");
             }
             result.add(shouldAddFirst ? 0 : result.size(), tree);
         });

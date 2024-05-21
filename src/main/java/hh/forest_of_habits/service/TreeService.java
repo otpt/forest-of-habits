@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+
 @Validated
 public interface TreeService {
     List<TreeResponse> getAllByForestId(Long forestId, TreeStatus status);
@@ -23,5 +24,6 @@ public interface TreeService {
 
     void delete(@Positive(message = "id не может быть меньше 1") Long id);
 
-    TreeIncrementsResponse addIncrementation(@Valid IncrementationRequest incrementationRequest, @Positive(message = "id не может быть меньше 1") Long treeId);
+    TreeIncrementsResponse addIncrementation(@Valid IncrementationRequest incrementationRequest,
+                                             @Positive(message = "id не может быть меньше 1") Long treeId);
 }

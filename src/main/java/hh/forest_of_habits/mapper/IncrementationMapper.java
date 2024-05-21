@@ -12,7 +12,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public abstract class IncrementationMapper {
     public abstract IncrementationResponse map(Incrementation s);
+
     public abstract Incrementation map(IncrementationRequest s);
+
     public abstract void update(@MappingTarget Incrementation incrementation, IncrementationRequest request);
+
     public abstract List<IncrementationResponse> mapAll(List<Incrementation> s);
 }

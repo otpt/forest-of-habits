@@ -16,7 +16,15 @@ import java.time.LocalDateTime;
 public class TreeResponse extends TreeBaseResponse {
     private Integer counter;
 
-    public TreeResponse(Long id, String name, String description, TreeType type, TreePeriod period, LocalDateTime createdAt, Integer limit, Long forestId, Long counter) {
+    public TreeResponse(Long id,
+                        String name,
+                        String description,
+                        TreeType type,
+                        TreePeriod period,
+                        LocalDateTime createdAt,
+                        Integer limit,
+                        Long forestId,
+                        Long counter) {
         super.setId(id);
         super.setName(name);
         super.setDescription(description);
