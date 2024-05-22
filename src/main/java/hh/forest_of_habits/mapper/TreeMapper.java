@@ -1,7 +1,11 @@
 package hh.forest_of_habits.mapper;
 
 import hh.forest_of_habits.dto.request.TreeRequest;
-import hh.forest_of_habits.dto.response.*;
+import hh.forest_of_habits.dto.response.IncrementsDateValue;
+import hh.forest_of_habits.dto.response.TreeBaseResponse;
+import hh.forest_of_habits.dto.response.TreeFullResponse;
+import hh.forest_of_habits.dto.response.TreeIncrementsResponse;
+import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
 import org.mapstruct.Mapper;
