@@ -5,6 +5,7 @@ import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.entity.Forest;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ForestService {
     List<ForestResponse> getAll();
@@ -15,7 +16,15 @@ public interface ForestService {
 
     ForestResponse change(Long id, ForestRequest forestRequest);
 
+    UUID makeShared(Long id, boolean state);
+
+    void makeShared(Long forestId, Long userId, boolean state);
+
     void delete(Long id);
 
     Forest getForest(Long id);
+
+    ForestResponse getByUUID(UUID id);
+
+    List<ForestResponse> getFriendsForests();
 }
