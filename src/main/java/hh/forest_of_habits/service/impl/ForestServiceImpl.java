@@ -54,8 +54,7 @@ public class ForestServiceImpl implements ForestService {
         try {
             OwnUtils.checkOwn(forest);
         } catch (ForbiddenException e) {
-            User user = userRepository.findByName(AuthFacade.getUsername()).get();
-            if (forestRepository.checkPermission(user.getId(), id) == 0)
+            if (forestRepository.checkPermission(userRepository.findByName(AuthFacade.getUsername()).get().getId(), id) == 0)
                 throw new ForbiddenException(e.getMessage());
         }
         return mapper.map(forest);
