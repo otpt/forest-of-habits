@@ -17,7 +17,8 @@ public interface ForestRepository extends CrudRepository<Forest, Long> {
 
     Optional<Forest> findBySharedId(UUID uuid);
 
-    @Query(value = "SELECT f.* FROM forests f JOIN accesses a on f.id = a.forest_id where a.user_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT f.* FROM forests f JOIN accesses a on f.id = a.forest_id where a.user_id = ?1",
+            nativeQuery = true)
     List<Forest> findFriendsForest(Long id);
 
     @Query(value = "INSERT INTO accesses VALUES(?1, ?2)", nativeQuery = true)

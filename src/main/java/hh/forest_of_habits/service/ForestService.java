@@ -24,7 +24,7 @@ public interface ForestService {
 
     void makeShared(Long forestId, Long userId, boolean state);
   
-    ForestResponse getByUUID(UUID id);
+    ForestResponse getByUuid(UUID id);
 
     List<ForestResponse> getFriendsForests();
   

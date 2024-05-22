@@ -3,7 +3,13 @@ package hh.forest_of_habits.controller;
 import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.service.ForestService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.UUID;
 
@@ -15,7 +21,7 @@ public class ShareController {
 
     @GetMapping("/{id}")
     ForestResponse getForest(@PathVariable UUID id) {
-        return forestService.getByUUID(id);
+        return forestService.getByUuid(id);
     }
 
     @PutMapping("/{id}")

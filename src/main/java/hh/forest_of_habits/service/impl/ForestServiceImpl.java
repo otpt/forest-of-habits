@@ -54,7 +54,8 @@ public class ForestServiceImpl implements ForestService {
         try {
             OwnUtils.checkOwn(forest);
         } catch (ForbiddenException e) {
-            if (forestRepository.checkPermission(userRepository.findByName(AuthFacade.getUsername()).get().getId(), id) == 0)
+            if (forestRepository.checkPermission(userRepository
+                    .findByName(AuthFacade.getUsername()).get().getId(), id) == 0)
                 throw new ForbiddenException(e.getMessage());
         }
         return mapper.map(forest);
@@ -103,7 +104,7 @@ public class ForestServiceImpl implements ForestService {
     }
 
     @Override
-    public ForestResponse getByUUID(UUID id) {
+    public ForestResponse getByUuid(UUID id) {
         return forestRepository.findBySharedId(id).map(mapper::map)
                 .orElseThrow(() -> new SharedObjectNotFoundException("Лес", id.toString()));
     }
