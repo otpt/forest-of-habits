@@ -6,6 +6,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 COPY .git .git
+COPY checkstyle checkstyle
 
 RUN ./mvnw install -DskipTests
 RUN ./mvnw org.springframework.boot:spring-boot-maven-plugin:build-info
