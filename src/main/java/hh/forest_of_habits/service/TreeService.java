@@ -24,6 +24,6 @@ public interface TreeService {
 
     void delete(@Positive(message = "id не может быть меньше 1") Long id);
 
-    TreeIncrementsResponse addIncrementation(IncrementationRequest incrementationRequest,
+    TreeIncrementsResponse addIncrementation(@Valid IncrementationRequest incrementationRequest,
                                              @Positive(message = "id не может быть меньше 1") Long treeId);
 }
