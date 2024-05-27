@@ -20,10 +20,10 @@ public interface TreeService {
 
     TreeResponse create(@Valid TreeRequest treeRequest);
 
-    TreeResponse update(@Positive(message = "id не может быть меньше 1") Long id, @Valid TreeRequest treeRequest);
+    TreeResponse update(@Positive(message = "id не может быть меньше 1") Long id, TreeRequest treeRequest);
 
     void delete(@Positive(message = "id не может быть меньше 1") Long id);
 
-    TreeIncrementsResponse addIncrementation(@Valid IncrementationRequest incrementationRequest,
+    TreeIncrementsResponse addIncrementation(IncrementationRequest incrementationRequest,
                                              @Positive(message = "id не может быть меньше 1") Long treeId);
 }
