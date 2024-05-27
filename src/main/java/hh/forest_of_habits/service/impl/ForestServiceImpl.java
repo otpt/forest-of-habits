@@ -54,8 +54,8 @@ public class ForestServiceImpl implements ForestService {
         try {
             OwnUtils.checkOwn(forest);
         } catch (ForbiddenException e) {
-            if (forestRepository.checkPermission(userRepository
-                    .findByName(AuthFacade.getUsername()).get().getId(), id) == 0)
+            User user = userRepository.findByName(AuthFacade.getUsername()).get();
+            if (forestRepository.checkPermission(user.getId(), id) == 0)
                 throw new ForbiddenException(e.getMessage());
         }
         return mapper.map(forest);
@@ -111,8 +111,9 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public List<ForestResponse> getFriendsForests() {
-        return mapper.mapAll(forestRepository
-                .findFriendsForest(userRepository.findByName(AuthFacade.getUsername()).get().getId()));
+        User user = userRepository.findByName(AuthFacade.getUsername()).get();
+        List<Forest> forests = forestRepository.findFriendsForest(user.getId());
+        return mapper.mapAll(forests);
     }
 
     @Override
