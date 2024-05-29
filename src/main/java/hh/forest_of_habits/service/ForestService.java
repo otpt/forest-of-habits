@@ -2,6 +2,7 @@ package hh.forest_of_habits.service;
 
 import hh.forest_of_habits.dto.request.ForestRequest;
 import hh.forest_of_habits.dto.response.ForestResponse;
+import hh.forest_of_habits.dto.response.StatResponse;
 import hh.forest_of_habits.entity.Forest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -22,4 +23,6 @@ public interface ForestService {
     void delete(@Positive(message = "id не может быть меньше 1") Long id);
 
     Forest getForest(@Positive(message = "id не может быть меньше 1") Long id);
+
+    StatResponse getStat();
 }

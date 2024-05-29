@@ -91,8 +91,8 @@ public class TreeServiceImpl implements TreeService {
     List<TreeResponse> getOpenTrees(List<TreeResponse> trees) {
         return trees.stream()
                 .filter(tree -> switch (tree.getType()) {
-                    case BOOLEAN_TREE, PERIODIC_TREE -> tree.getCounter() == 0;
-                    case UNLIMITED_TREE -> true;
+                    case BOOLEAN_TREE -> tree.getCounter() == 0;
+                    case UNLIMITED_TREE, PERIODIC_TREE -> true;
                     case LIMITED_TREE -> tree.getCounter() < tree.getLimit();
                 })
                 .toList();
