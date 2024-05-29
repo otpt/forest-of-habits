@@ -20,5 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/stat")
-    public StatResponse getStat() { return forestService.getStat(); }
+    public StatResponse getStat() {
+        return forestService.getStat();
+    }
 }
