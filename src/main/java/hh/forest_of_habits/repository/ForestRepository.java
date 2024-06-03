@@ -31,6 +31,6 @@ public interface ForestRepository extends CrudRepository<Forest, Long> {
     @Transactional
     void deleteAccess(Long userId, Long forestId);
 
-    @Query(value = "SELECT COUNT(*) FROM accesses WHERE user_id = ?1 and forest_id = ?2", nativeQuery = true)
-    int checkPermission(Long userId, Long forestId);
+    @Query(value = "SELECT COUNT(*) > 0 FROM accesses WHERE user_id = ?1 and forest_id = ?2", nativeQuery = true)
+    Boolean checkPermission(Long userId, Long forestId);
 }
