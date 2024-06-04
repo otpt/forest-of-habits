@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,4 +26,6 @@ public class TreeRequest {
     @JsonProperty("forest_id")
     @Positive(message = "ID леса, к которому относится дерево, должен быть больше или равен 1")
     private Long forestId;
+    @JsonProperty("created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
