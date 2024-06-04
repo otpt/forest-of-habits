@@ -45,4 +45,9 @@ public class ForestController {
     void delete(@PathVariable Long id) {
         forestService.delete(id);
     }
+
+    @GetMapping("/friends")
+    public List<ForestResponse> getFriendsForests() {
+        return forestService.getFriendsForests();
+    }
 }

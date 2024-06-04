@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 public interface ForestService {
@@ -19,6 +20,14 @@ public interface ForestService {
 
     ForestResponse change(@Positive(message = "id не может быть меньше 1") Long id, @Valid ForestRequest forestRequest);
 
+    UUID makeShared(Long id, boolean state);
+
+    void makeShared(Long forestId, Long userId, boolean state);
+  
+    ForestResponse getByUuid(UUID id);
+
+    List<ForestResponse> getFriendsForests();
+  
     void delete(@Positive(message = "id не может быть меньше 1") Long id);
 
     Forest getForest(@Positive(message = "id не может быть меньше 1") Long id);

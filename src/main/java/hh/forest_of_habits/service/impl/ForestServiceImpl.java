@@ -5,7 +5,9 @@ import hh.forest_of_habits.dto.response.ForestResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
+import hh.forest_of_habits.exception.ForbiddenException;
 import hh.forest_of_habits.exception.ForestNotFoundException;
+import hh.forest_of_habits.exception.SharedObjectNotFoundException;
 import hh.forest_of_habits.exception.UserNotFoundException;
 import hh.forest_of_habits.mapper.ForestMapper;
 import hh.forest_of_habits.repository.ForestRepository;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -46,7 +49,15 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public ForestResponse getById(Long id) {
-        Forest forest = getForest(id);
+        Forest forest = forestRepository.findById(id)
+                .orElseThrow(() -> new ForestNotFoundException(id));
+        try {
+            OwnUtils.checkOwn(forest);
+        } catch (ForbiddenException e) {
+            User user = userRepository.findByName(AuthFacade.getUsername()).get();
+            if (!forestRepository.checkPermission(user.getId(), id))
+                throw new ForbiddenException(e.getMessage());
+        }
         return mapper.map(forest);
     }
 
@@ -71,8 +82,38 @@ public class ForestServiceImpl implements ForestService {
     }
 
     @Override
+    public UUID makeShared(Long id, boolean state) {
+        Forest forest = getForest(id);
+        forest.setSharedId(state ? UUID.randomUUID() : null);
+        return forestRepository.save(forest).getSharedId();
+    }
+
+    @Override
+    public void makeShared(Long forestId, Long userId, boolean state) {
+        getForest(forestId);
+        if (state) {
+            forestRepository.insertAccess(userId, forestId);
+        } else {
+            forestRepository.deleteAccess(userId, forestId);
+        }
+    }
+
+    @Override
     public void delete(Long id) {
         forestRepository.delete(getForest(id));
+    }
+
+    @Override
+    public ForestResponse getByUuid(UUID id) {
+        return forestRepository.findBySharedId(id).map(mapper::map)
+                .orElseThrow(() -> new SharedObjectNotFoundException("Лес", id.toString()));
+    }
+
+    @Override
+    public List<ForestResponse> getFriendsForests() {
+        User user = userRepository.findByName(AuthFacade.getUsername()).get();
+        List<Forest> forests = forestRepository.findFriendsForest(user.getId());
+        return mapper.mapAll(forests);
     }
 
     @Override
