@@ -50,7 +50,7 @@ public class AuthService {
         String email = registrationRequest.getEmail();
         Boolean agreement = registrationRequest.getAgreementConfirmation();
 
-        if(Boolean.FALSE.equals(agreement))
+        if (Boolean.FALSE.equals(agreement))
             throw new BadRequestException("Без согласия не регистрируем!");
 
         if (userService.findByName(username).isPresent())
