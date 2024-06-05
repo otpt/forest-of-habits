@@ -12,6 +12,7 @@ public class RegistrationRequest {
     private String username;
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
+    @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Неверный формат email")
     private String email;
     private Boolean agreementConfirmation;
