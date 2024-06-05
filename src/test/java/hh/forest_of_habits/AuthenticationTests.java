@@ -78,11 +78,15 @@ public class AuthenticationTests extends ForestOfHabitsApplicationTests {
                 .agreementConfirmation(agreement)
                 .build();
 
+        HttpStatus expectedStatus = Boolean.FALSE.equals(agreement) ?
+                HttpStatus.CONFLICT :
+                HttpStatus.BAD_REQUEST;
+
         webClient.post()
                 .uri(URI_REGISTRATION)
                 .bodyValue(request)
                 .exchange()
-                .expectStatus().isBadRequest()
+                .expectStatus().isEqualTo(expectedStatus)
                 .expectBody()
                 .jsonPath("$.message").isNotEmpty()
                 .jsonPath("$.timestamp").isNotEmpty();
@@ -168,7 +172,7 @@ public class AuthenticationTests extends ForestOfHabitsApplicationTests {
                 .expectStatus().isUnauthorized()
                 .expectBody()
                 .jsonPath("$.message").isNotEmpty()
-                .jsonPath("$.timestamp").isNotEmpty();;
+                .jsonPath("$.timestamp").isNotEmpty();
     }
 
     @Test
