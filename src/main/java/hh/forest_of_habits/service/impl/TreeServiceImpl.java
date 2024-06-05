@@ -44,7 +44,14 @@ public class TreeServiceImpl implements TreeService {
 
     @Override
     public TreeFullResponse getById(Long id) {
-        return treeMapper.mapToFull(getTree(id));
+        Tree tree = treeRepository.findById(id)
+                .orElseThrow(() -> new TreeNotFoundException(id));
+        if (tree.getForest().getSharedId() != null) {
+            return treeMapper.mapToFull(tree);
+        } else {
+            OwnUtils.checkOwn(tree);
+            return treeMapper.mapToFull(tree);
+        }
     }
 
     @Override
