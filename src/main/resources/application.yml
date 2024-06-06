@@ -16,6 +16,7 @@ security:
         - /swagger-ui/**
         - /swagger-ui.html
         - /actuator/**
+        - /shared/**
 management:
     endpoint:
         health:

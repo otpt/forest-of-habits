@@ -17,4 +17,6 @@
     <include file="101-update-datas.xml" relativeToChangelogFile="true"/>
     <include file="009-rename-column-limit-changeset-trees-table.xml" relativeToChangelogFile="true"/>
     <include file="010-cast-values-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="011-create-changeset-accesses-table.xml" relativeToChangelogFile="true"/>
+    <include file="012-add-column-uuid-forests-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

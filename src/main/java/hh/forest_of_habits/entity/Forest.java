@@ -18,6 +18,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -44,4 +45,7 @@ public class Forest {
     @OneToMany
     @JoinColumn(name = "forest_id")
     private List<Tree> trees;
+
+    @Column(name = "uuid")
+    private UUID sharedId;
 }

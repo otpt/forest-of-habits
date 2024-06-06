@@ -147,6 +147,8 @@ class ForestServiceTest {
         User user = new User();
         user.setName(anotherUsername);
 
+        when(userRepository.findByName(any())).thenReturn(Optional.of(user));
+
         String forestName = "name";
         Forest forest = Forest.builder()
                 .id(forestId)
