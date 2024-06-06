@@ -101,17 +101,17 @@ public class ForestServiceImpl implements ForestService {
 
     @Override
     public StatResponse getStat() {
-        List<ForestResponse> forests = mapper.mapAll(forestRepository.findByUser_name(AuthFacade.getUsername()));
+        List<Forest> forests = forestRepository.findByUser_name(AuthFacade.getUsername());
         int allForests = forests.size();
         int allTrees = 0;
         int openTrees = 0;
         int closeTrees = 0;
         int openForests = 0;
         int closeForests = 0;
-        for (ForestResponse forest : forests) {
-            forest.setTrees(treeRepository.findTreesWithIncrementsCounter(forest.getId()));
-            int all = forest.getTrees().size();
-            int close = (int) forest.getTrees().stream().filter(tree -> switch (tree.getType()) {
+        for (Forest forest : forests) {
+            List<TreeResponse> trees = treeRepository.findTreesWithIncrementsCounter(forest.getId());
+            int all = trees.size();
+            int close = (int) trees.stream().filter(tree -> switch (tree.getType()) {
                 case BOOLEAN_TREE -> tree.getCounter() > 0;
                 case UNLIMITED_TREE, PERIODIC_TREE -> false;
                 case LIMITED_TREE -> tree.getCounter() >= tree.getLimit();
