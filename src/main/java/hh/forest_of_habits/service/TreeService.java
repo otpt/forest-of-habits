@@ -11,10 +11,13 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.UUID;
 
 @Validated
 public interface TreeService {
     List<TreeResponse> getAllByForestId(Long forestId, TreeStatus status);
+
+    List<TreeResponse> getAllByForestUuid(UUID forestUuid, TreeStatus status);
 
     TreeFullResponse getById(@Positive(message = "id не может быть меньше 1") Long id);
 
