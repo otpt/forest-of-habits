@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -27,6 +29,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtils jwtTokenUtils;
     private final HandlerExceptionResolver handlerExceptionResolver;
+
+    private final SecurityProperties securityProperties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -56,5 +60,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+        return Arrays.stream(securityProperties.getIgnored())
+                .anyMatch(e -> new AntPathMatcher().match(e, request.getServletPath()));
     }
 }

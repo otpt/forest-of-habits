@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,5 +51,25 @@ public class ForestController {
     @GetMapping("/friends")
     public List<ForestResponse> getFriendsForests() {
         return forestService.getFriendsForests();
+    }
+
+    @PutMapping("/share/{id}")
+    UUID makeShared(@PathVariable Long id) {
+        return forestService.makeShared(id, true);
+    }
+
+    @PutMapping("/share")
+    void makeShared(@RequestParam Long forestId, @RequestParam Long userId) {
+        forestService.makeShared(forestId, userId, true);
+    }
+
+    @DeleteMapping("/share/{id}")
+    void makeUnshared(@PathVariable Long id) {
+        forestService.makeShared(id, false);
+    }
+
+    @DeleteMapping("/share")
+    void makeUnshared(@RequestParam Long forestId, @RequestParam Long userId) {
+        forestService.makeShared(forestId, userId, false);
     }
 }
