@@ -2,6 +2,7 @@ package hh.forest_of_habits.service.impl;
 
 import hh.forest_of_habits.dto.request.ForestRequest;
 import hh.forest_of_habits.dto.response.ForestResponse;
+import hh.forest_of_habits.dto.response.StatResponse;
 import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.User;
@@ -137,5 +138,34 @@ public class ForestServiceImpl implements ForestService {
             result.add(shouldAddFirst ? 0 : result.size(), tree);
         });
         return result;
+    }
+
+    @Override
+    public StatResponse getStat() {
+        List<Forest> forests = forestRepository.findByUser_name(AuthFacade.getUsername());
+        int allForests = forests.size();
+        int allTrees = 0;
+        int openTrees = 0;
+        int closeTrees = 0;
+        int openForests = 0;
+        int closeForests = 0;
+        for (Forest forest : forests) {
+            List<TreeResponse> trees = treeRepository.findTreesWithIncrementsCounter(forest.getId());
+            int all = trees.size();
+            int close = (int) trees.stream().filter(tree -> switch (tree.getType()) {
+                case BOOLEAN_TREE -> tree.getCounter() > 0;
+                case UNLIMITED_TREE, PERIODIC_TREE -> false;
+                case LIMITED_TREE -> tree.getCounter() >= tree.getLimit();
+            }).count();
+            if (all != close) {
+                openForests++;
+            } else {
+                closeForests++;
+            }
+            allTrees += all;
+            closeTrees += close;
+            openTrees += all - close;
+        }
+        return new StatResponse(allTrees, openTrees, closeTrees, allForests, openForests, closeForests);
     }
 }
