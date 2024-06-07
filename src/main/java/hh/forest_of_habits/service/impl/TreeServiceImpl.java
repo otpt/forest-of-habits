@@ -9,9 +9,11 @@ import hh.forest_of_habits.dto.response.TreeResponse;
 import hh.forest_of_habits.entity.Forest;
 import hh.forest_of_habits.entity.Incrementation;
 import hh.forest_of_habits.entity.Tree;
+import hh.forest_of_habits.exception.SharedObjectNotFoundException;
 import hh.forest_of_habits.exception.TreeNotFoundException;
 import hh.forest_of_habits.mapper.IncrementationMapper;
 import hh.forest_of_habits.mapper.TreeMapper;
+import hh.forest_of_habits.repository.ForestRepository;
 import hh.forest_of_habits.repository.IncrementationRepository;
 import hh.forest_of_habits.repository.TreeRepository;
 import hh.forest_of_habits.service.ForestService;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("checkstyle:VariableDeclarationUsageDistance")
 @RequiredArgsConstructor
@@ -28,30 +31,33 @@ import java.util.List;
 public class TreeServiceImpl implements TreeService {
     private final ForestService forestService;
     private final TreeRepository treeRepository;
+    private final ForestRepository forestRepository;
     private final IncrementationRepository incrementationRepository;
     private final TreeMapper treeMapper;
     private final IncrementationMapper incrementationMapper;
 
     @Override
     public List<TreeResponse> getAllByForestId(Long forestId, TreeStatus status) {
-        List<TreeResponse> allTrees = treeRepository.findTreesWithIncrementsCounter(forestId);
-        return switch (status) {
-            case ALL -> allTrees;
-            case OPEN -> getOpenTrees(allTrees);
-            case CLOSE -> getCloseTrees(allTrees);
-        };
+        Forest forest = forestService.getForest(forestId);
+        return getFilteredTreesByForestId(forest.getId(), status);
+    }
+
+    @Override
+    public List<TreeResponse> getAllByForestUuid(UUID forestUuid, TreeStatus status) {
+        Forest forest = forestRepository.findBySharedId(forestUuid).orElseThrow(
+                () -> new SharedObjectNotFoundException("Лес", forestUuid.toString())
+        );
+        return getFilteredTreesByForestId(forest.getId(), status);
     }
 
     @Override
     public TreeFullResponse getById(Long id) {
         Tree tree = treeRepository.findById(id)
                 .orElseThrow(() -> new TreeNotFoundException(id));
-        if (tree.getForest().getSharedId() != null) {
-            return treeMapper.mapToFull(tree);
-        } else {
+        if (tree.getForest().getSharedId() == null) {
             OwnUtils.checkOwn(tree);
-            return treeMapper.mapToFull(tree);
         }
+        return treeMapper.mapToFull(tree);
     }
 
     @Override
@@ -95,7 +101,7 @@ public class TreeServiceImpl implements TreeService {
         return tree;
     }
 
-    List<TreeResponse> getOpenTrees(List<TreeResponse> trees) {
+    private List<TreeResponse> getOpenTrees(List<TreeResponse> trees) {
         return trees.stream()
                 .filter(tree -> switch (tree.getType()) {
                     case BOOLEAN_TREE -> tree.getCounter() == 0;
@@ -105,7 +111,7 @@ public class TreeServiceImpl implements TreeService {
                 .toList();
     }
 
-    List<TreeResponse> getCloseTrees(List<TreeResponse> trees) {
+    private List<TreeResponse> getCloseTrees(List<TreeResponse> trees) {
         return trees.stream()
                 .filter(tree -> switch (tree.getType()) {
                     case BOOLEAN_TREE -> tree.getCounter() > 0;
@@ -114,4 +120,14 @@ public class TreeServiceImpl implements TreeService {
                 })
                 .toList();
     }
+
+    private  List<TreeResponse> getFilteredTreesByForestId(Long forestId, TreeStatus status) {
+        List<TreeResponse> allTrees = treeRepository.findTreesWithIncrementsCounter(forestId);
+        return switch (status) {
+            case ALL -> allTrees;
+            case OPEN -> getOpenTrees(allTrees);
+            case CLOSE -> getCloseTrees(allTrees);
+        };
+    }
+
 }
