@@ -4,6 +4,7 @@ import hh.forest_of_habits.dto.request.AuthRequest;
 import hh.forest_of_habits.dto.request.RegistrationRequest;
 import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.exception.AuthenticationException;
+import hh.forest_of_habits.exception.BadRequestException;
 import hh.forest_of_habits.exception.EmailAlreadyExistsException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
 import hh.forest_of_habits.utils.JwtTokenUtils;
@@ -46,6 +47,10 @@ public class AuthService {
     public AuthResponse registration(@Valid @RequestBody RegistrationRequest registrationRequest) {
         String username = registrationRequest.getUsername();
         String email = registrationRequest.getEmail();
+        Boolean agreement = registrationRequest.getAgreementConfirmation();
+
+        if (Boolean.FALSE.equals(agreement))
+            throw new BadRequestException("Без согласия не регистрируем!");
 
         if (userService.findByName(username).isPresent())
             throw new UserAlreadyExistsException(username);

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="initial/000-create-changeset-enums.xml" relativeToChangelogFile="true"/>
+    <include file="initial/001-create-changeset-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/002-create-changeset-forests-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/003-create-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/004-create-changeset-incrementations-log-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/005-add-column-user-agreement-changeset-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/006-rename-column-type-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/007-change-column-type-incrementation-log.xml" relativeToChangelogFile="true"/>
+    <include file="initial/008-rename-enum-values.xml" relativeToChangelogFile="true"/>
+    <include file="initial/009-rename-column-limit-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+    <include file="initial/010-cast-values-changeset-trees-table.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

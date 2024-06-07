@@ -1,0 +1,15 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    url: ${CONTAINER.URL}
+    username: ${CONTAINER.USERNAME}
+    password: ${CONTAINER.PASSWORD}
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-test.xml
+
+jwt:
+  lifetime: 30m
+  secret: ew!s34df34543@zxcliu45$^sd&^%234455#$%^nmssd3
