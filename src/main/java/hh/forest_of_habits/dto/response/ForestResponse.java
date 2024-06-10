@@ -20,5 +20,6 @@ public class ForestResponse {
     private String name;
     private LocalDateTime createdAt;
     private List<TreeResponse> trees;
+    private Integer totalNumberTrees;
     private UUID sharedId;
 }
