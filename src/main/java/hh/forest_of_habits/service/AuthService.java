@@ -6,6 +6,8 @@ import hh.forest_of_habits.dto.response.AuthResponse;
 import hh.forest_of_habits.exception.AuthenticationException;
 import hh.forest_of_habits.exception.EmailAlreadyExistsException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
+import hh.forest_of_habits.model.Message;
+import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class AuthService {
     private final UserService userService;
     private final JwtTokenUtils tokenUtils;
     private final AuthenticationManager authenticationManager;
+    private final DataSender dataSender;
+    private final UserRepository userRepository;
 
     public AuthResponse login(@Valid @RequestBody AuthRequest authRequest) {
         Authentication authentication;
@@ -60,6 +64,9 @@ public class AuthService {
                 "",
                 List.of()
         );
+
+        dataSender.send(new Message(userRepository.findByName(username).get().getId(), email));
+
         return authResponse(userDetails);
     }
 

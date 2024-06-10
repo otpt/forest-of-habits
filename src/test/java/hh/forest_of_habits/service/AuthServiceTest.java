@@ -7,6 +7,8 @@ import hh.forest_of_habits.entity.User;
 import hh.forest_of_habits.exception.AuthenticationException;
 import hh.forest_of_habits.exception.EmailAlreadyExistsException;
 import hh.forest_of_habits.exception.UserAlreadyExistsException;
+import hh.forest_of_habits.model.Message;
+import hh.forest_of_habits.repository.UserRepository;
 import hh.forest_of_habits.utils.JwtTokenUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,10 @@ public class AuthServiceTest {
     private AuthenticationManager authenticationManager;
     @InjectMocks
     private AuthService authService;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private DataSender dataSender;
 
     @Test
     @DisplayName("Логин незарегистрированного юзера")
@@ -102,8 +108,13 @@ public class AuthServiceTest {
                 .agreementConfirmation(agreementConfirmation)
                 .build();
 
+        User user = User.builder()
+                .id(1L)
+                .build();
+
         Mockito.when(tokenUtils.generateToken(any())).thenReturn(mockToken);
         Mockito.when(userService.findByName(any())).thenReturn(Optional.empty(), Optional.of(new User()));
+        Mockito.when(userRepository .findByName(any())).thenReturn(Optional.of(user));
         AuthResponse authResponse = authService.registration(registrationRequest);
 
         ArgumentCaptor<RegistrationRequest> argument = ArgumentCaptor.forClass(RegistrationRequest.class);
@@ -111,5 +122,7 @@ public class AuthServiceTest {
         assertEquals(username, argument.getValue().getUsername());
         assertEquals(username, authResponse.getUserName());
         assertEquals(mockToken, authResponse.getToken());
+        Mockito.verify(dataSender, Mockito.times(1))
+                .send(any(Message.class));
     }
 }
