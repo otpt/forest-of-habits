@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class ForestMapper {
     public abstract List<ForestResponse> mapAll(List<Forest> s);
 
-    @Mapping(target = "totalNumberTrees", expression = "java(s.getTrees().size())")
+    @Mapping(target = "totalNumberTrees", expression = "java(s.getTrees() == null ? 0 : s.getTrees().size())")
     public abstract ForestResponse map(Forest s);
 
     public abstract Forest map(ForestRequest s);
