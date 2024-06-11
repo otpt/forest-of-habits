@@ -11,9 +11,9 @@ spring:
         enabled: true
         change-log: classpath:/db/changelog/changelog-master.xml
     kafka:
-        bootstrap-servers: "localhost:29092"
+        bootstrap-servers: "185.50.202.250:29092"
         producer:
-            bootstrap-servers: "localhost:29092"
+            bootstrap-servers: "185.50.202.250:29092"
             client-id: "producer"
 security:
     ignored:
